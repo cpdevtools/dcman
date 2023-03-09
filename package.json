@@ -1,0 +1,41 @@
+{
+  "name": "@cpdevtools/dcman",
+  "version": "0.0.0",
+  "private": true,
+  "repository": "https://github.com/cpdevtools/dcman",
+  "scripts": {
+    "prepare": "run-s prepare:*",
+    "prepare:husky": "husky install",
+    "prepare:remove-tags": "git tag | xargs git tag -d",
+    "prepare:build": "pnpm run build",
+    "build": "run-s build:*",
+    "pack": "pnpm -r run pack",
+    "release": "pnpm -r run release",
+    "test": "echo \"No test to run.\"",
+    "tags": "git tag | xargs git tag -d",
+    "fix": "run-s fix:*",
+    "fix:prettier": "prettier --write --ignore-unknown .",
+    "pre-commit": "run-s pre-commit:*",
+    "pre-commit:tags": "git tag | xargs git tag -d",
+    "pre-commit:set-version-placeholders": "pnpm run set-version-placeholders",
+    "reset-hard": "git clean -dfx && git reset --hard && pnpm i",
+    "set-version": "run-p \"set-version:* {1}\" --",
+    "set-version:set-version": "pnpm version --allow-same-version --commit-hooks=false --git-tag-version=false",
+    "set-version:set-project-versions": "pnpm -r run set-version",
+    "set-version-placeholders": "pnpm -r run set-version 0.0.0-PLACEHOLDER",
+    "actions-build": "pnpm run build",
+    "actions-test": "pnpm run test",
+    "actions-set-version": "pnpm run set-version",
+    "actions-pack": "pnpm run pack",
+    "actions-publish": "pnpm run release"
+  },
+  "lint-staged": {
+    "*": "prettier --write --ignore-unknown"
+  },
+  "devDependencies": {
+    "husky": "^8.0.3",
+    "lint-staged": "^13.1.2",
+    "npm-run-all2": "^6.0.4",
+    "prettier": "^2.8.4"
+  }
+}

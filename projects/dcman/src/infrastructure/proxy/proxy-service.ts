@@ -4,5 +4,5 @@ export async function initializeProxyService() {
   const cwd = __dirname;
   const cliOpts = new Options(undefined, cwd, true);
   const cli = new DockerCli(cliOpts);
-  await cli.command(`stack deploy -c stack.yml dev-infrastructure`);
+  await cli.command(`stack deploy -c stack.yml dcm-infrastructure`);
 }

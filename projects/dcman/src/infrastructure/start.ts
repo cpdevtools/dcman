@@ -1,6 +1,7 @@
 import Docker from "dockerode";
 import { initializeDNSService } from "./dns/dns-service";
 import { initializeProxyService } from "./proxy/proxy-service";
+import { initializeDevcontainerInfrastructure } from "./dev-containers";
 
 async function initializeDockerSwarm() {
   const docker = new Docker();
@@ -47,9 +48,9 @@ async function getConfig(id: string) {
 }
 
 export function startInfrastructure() {
-  return Promise.all([initializeDockerSwarm(), initializeDNSService(), initializeProxyService()]);
+  return Promise.all([initializeDockerSwarm(), initializeDevcontainerInfrastructure(), initializeDNSService(), initializeProxyService()]);
 }
 
-(async () => {
-  await startInfrastructure();
-})();
+// (async () => {
+//   await startInfrastructure();
+// })();

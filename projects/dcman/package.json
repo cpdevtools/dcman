@@ -2,6 +2,8 @@
   "name": "@cpdevtools/dcman",
   "description": "A library for managing Docker Dev Containers",
   "version": "0.0.0-PLACEHOLDER",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "build": "run-s build:*",
     "build:ts": "tsc",

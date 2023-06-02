@@ -1,5 +1,24 @@
 {
   "name": "@cpdevtools/dcman-cli",
   "description": "A command line tool for managing Docker Dev Containers",
-  "version": "0.0.0-PLACEHOLDER"
+  "version": "0.0.0-PLACEHOLDER",
+  "bin": {
+    "dcm": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "run-s build:*",
+    "build:ts": "tsc",
+    "watch": "run-p watch:*",
+    "watch:ts": "tsc --watch"
+  },
+  "devDependencies": {
+    "@types/node": "^20.2.5",
+    "@types/yargs": "^17.0.24",
+    "npm-run-all2": "^6.0.4",
+    "typescript": "^5.0.4"
+  },
+  "dependencies": {
+    "@cpdevtools/dcman": "link:../dcman",
+    "yargs": "^17.7.2"
+  }
 }

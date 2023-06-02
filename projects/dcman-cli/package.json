@@ -8,7 +8,7 @@
   "scripts": {
     "build": "run-s build:*",
     "build:install": "pnpm i --ignore-scripts",
-    "build:ts": "tsc",
+    "build:ts": "tsc -p tsconfig.json",
     "watch": "run-p watch:*",
     "watch:ts": "tsc --watch"
   },

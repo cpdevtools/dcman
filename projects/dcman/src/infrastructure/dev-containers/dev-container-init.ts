@@ -32,7 +32,6 @@ async function getNetwork(name: string) {
   try {
     const docker = new Dockerode();
     const network = docker.getNetwork(name);
-    console.log("network", network);
     return await network.inspect();
   } catch {
     return null;

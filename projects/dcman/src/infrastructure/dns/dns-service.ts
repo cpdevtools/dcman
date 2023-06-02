@@ -21,8 +21,6 @@ export async function initializeDNSService() {
   });
 
   const cliOpts = new Options(undefined, cwd, true);
-
   const cli = new DockerCli(cliOpts);
-  const deployResult = await cli.command(`stack deploy -c stack.yml dcm-infrastructure`);
-  console.log(deployResult);
+  await cli.command(`stack deploy -c stack.yml dcm-infrastructure`);
 }

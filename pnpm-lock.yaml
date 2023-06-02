@@ -38,7 +38,7 @@ importers:
 
   projects/dcman-cli:
     specifiers:
-      "@cpdevtools/dcman": link:../dcman
+      "@cpdevtools/dcman": 0.0.0-PLACEHOLDER
       "@types/node": ^20.2.5
       "@types/yargs": ^17.0.24
       npm-run-all2: ^6.0.4

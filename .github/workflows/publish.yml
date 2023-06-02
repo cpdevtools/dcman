@@ -1,0 +1,9 @@
+name: Check pull request
+
+on:
+  push:
+    branches:
+      - "release/*"
+jobs:
+  build:
+    uses: cpdevtools/common-github-workflows/.github/workflows/pnpm-publish.yml@main

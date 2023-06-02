@@ -11,7 +11,9 @@
     "build:link": "pnpm --global link",
     "pack": "mkdir ./pack && pnpm pack --pack-destination ./pack && ls -al ./pack",
     "watch": "run-p watch:*",
-    "watch:ts": "tsc --watch"
+    "watch:ts": "tsc --watch",
+    "set-version": "run-p \"set-version:* {1}\" --",
+    "set-version:npm": "pnpm version --allow-same-version --commit-hooks=false --git-tag-version=false"
   },
   "devDependencies": {
     "@types/node": "^20.2.5",

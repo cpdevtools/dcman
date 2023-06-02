@@ -9,6 +9,7 @@
     "build:ts": "tsc",
     "build:copy-files": "copyfiles -u 1 \"src/**/*\" dist",
     "build:link": "pnpm --global link",
+    "pack": "mkdir ./pack && pnpm pack --pack-destination ./pack && ls -al ./pack",
     "watch": "run-p watch:*",
     "watch:ts": "tsc --watch",
     "watch:copy-files": "watch \"npm run build:copy-files\" ./src --wait=1",

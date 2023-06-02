@@ -9,6 +9,7 @@
     "build": "run-s build:*",
     "build:ts": "tsc",
     "build:link": "pnpm --global link",
+    "pack": "mkdir ./pack && pnpm pack --pack-destination ./pack && ls -al ./pack",
     "watch": "run-p watch:*",
     "watch:ts": "tsc --watch"
   },

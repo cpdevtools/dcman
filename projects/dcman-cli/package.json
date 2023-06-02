@@ -1,0 +1,5 @@
+{
+  "name": "@cpdevtools/dcman-cli",
+  "description": "A command line tool for managing Docker Dev Containers",
+  "version": "0.0.0-PLACEHOLDER"
+}

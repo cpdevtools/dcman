@@ -7,7 +7,7 @@
     "prepare": "run-s prepare:*",
     "prepare:husky": "husky install",
     "prepare:remove-tags": "git tag | xargs git tag -d",
-    "prepare:build": "pnpm run build",
+    "xprepare:build": "pnpm run build",
     "build": "run-s build:*",
     "pack": "pnpm -r run pack",
     "release": "pnpm -r run release",

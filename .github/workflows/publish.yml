@@ -12,4 +12,4 @@ jobs:
       toNpm: true
       toGithub: true
       githubToken: ${{ github.token }}
-      npmToken: ${{ secrets.NPM_TOKEN }}
+      npmToken: ${{ secret.NPM_TOKEN }}

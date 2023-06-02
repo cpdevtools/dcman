@@ -4,6 +4,12 @@ on:
   push:
     branches:
       - "release/*"
+
 jobs:
   build:
     uses: cpdevtools/common-github-workflows/.github/workflows/pnpm-publish.yml@main
+    with:
+      toNpm: true
+      toGithub: true
+      githubToken: ${{ github.token }}
+      npmToken: ${{ secrets.NPM_TOKEN }}

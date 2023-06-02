@@ -1,0 +1,15 @@
+version: "3.9"
+
+services:
+  dns:
+    image: "dcm-dnsmasq:latest"
+    deploy:
+      mode: global
+      restart_policy:
+        condition: on-failure
+    ports:
+      - 53:53/udp
+      - 5380:8080
+    environment:
+      - HTTP_USER=admin
+      - HTTP_PASS=admin

@@ -5,12 +5,16 @@
   "bin": {
     "dcm": "./dist/cli.js"
   },
+  "repository": "https://github.com/cpdevtools/dcman",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "run-s build:*",
     "build:ts": "tsc",
     "build:link": "pnpm --global link",
     "pack": "mkdir ./pack && pnpm pack --pack-destination ./pack && ls -al ./pack",
-    "release": "pnpm publish ./pack/*.tgz --access public --no-git-checks --publish-branch 'release/latest'",
+    "release": "pnpm publish ./pack/*.tgz --no-git-checks --access public  --publish-branch 'release/latest'",
     "watch": "run-p watch:*",
     "watch:ts": "tsc --watch",
     "set-version": "run-p \"set-version:* {1}\" --",

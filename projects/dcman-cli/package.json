@@ -10,6 +10,7 @@
     "build:ts": "tsc",
     "build:link": "pnpm --global link",
     "pack": "mkdir ./pack && pnpm pack --pack-destination ./pack && ls -al ./pack",
+    "release": "pnpm publish ./pack/*.tgz --access public --publish-branch 'release/latest'",
     "watch": "run-p watch:*",
     "watch:ts": "tsc --watch",
     "set-version": "run-p \"set-version:* {1}\" --",

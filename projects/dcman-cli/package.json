@@ -1,0 +1,36 @@
+{
+  "name": "@cpdevtools/dcman-cli",
+  "description": "A command line tool for managing Docker Dev Containers",
+  "version": "0.0.0-PLACEHOLDER",
+  "bin": {
+    "dcm": "./dist/cli.js"
+  },
+  "repository": "https://github.com/cpdevtools/dcman",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "run-s build:*",
+    "build:ts": "tsc",
+    "build:link": "pnpm --global link",
+    "pack": "mkdir ./pack && pnpm pack --pack-destination ./pack && ls -al ./pack",
+    "release": "pnpm publish ./pack/*.tgz --no-git-checks --access public  --publish-branch 'release/latest'",
+    "watch": "run-p watch:*",
+    "watch:ts": "tsc --watch",
+    "set-version": "run-p \"set-version:* {1}\" --",
+    "set-version:npm": "pnpm version --allow-same-version --commit-hooks=false --git-tag-version=false"
+  },
+  "devDependencies": {
+    "@types/node": "^20.2.5",
+    "@types/yargs": "^17.0.24",
+    "npm-run-all2": "^6.0.4",
+    "typescript": "^5.0.4"
+  },
+  "dependencies": {
+    "@cpdevtools/dcman": "0.0.0-PLACEHOLDER",
+    "yargs": "^17.7.2"
+  },
+  "resolutions": {
+    "@cpdevtools/dcman": "link:../dcman"
+  }
+}

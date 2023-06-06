@@ -1,0 +1,30 @@
+version: "3.9"
+
+services:
+  proxy:
+    image: "traefik:v2.6"
+    command:
+      - "--log.level=DEBUG"
+      - "--accessLog=true"
+      - "--api.insecure=true"
+      - "--api.dashboard=true"
+
+      - "--providers.docker=true"
+      - "--providers.docker.exposedByDefault=false"
+      - "--providers.docker.swarmMode=true"
+      - "--providers.docker.watch=true"
+
+      - "--entryPoints.web.address=:80"
+      - "--entryPoints.webSecure.address=:443"
+
+      - "--certificatesResolvers.letsEncrypt.acme.email=support@conceptual.ca"
+      - "--certificatesResolvers.letsEncrypt.acme.storage=/letsEncrypt/acme.json"
+      - "--certificatesResolvers.letsEncrypt.acme.httpChallenge.entryPoint=web"
+      - "--certificatesResolvers.letsEncrypt.acme.caServer=https://acme-staging-v02.api.letsEncrypt.org/directory"
+
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"

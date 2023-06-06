@@ -1,0 +1,16 @@
+name: Publish
+
+on:
+  push:
+    branches:
+      - "release/*"
+
+jobs:
+  build:
+    uses: cpdevtools/common-github-workflows/.github/workflows/pnpm-publish.yml@main
+    with:
+      toNpm: true
+      toGithub: true
+    secrets:
+      npmToken: ${{ secrets.NPM_TOKEN }}
+      githubToken: ${{ secrets.GITHUB_TOKEN }}

@@ -23,6 +23,7 @@
     "set-version": "run-p \"set-version:* {1}\" --",
     "set-version:set-version": "pnpm version --allow-same-version --commit-hooks=false --git-tag-version=false",
     "set-version:set-project-versions": "pnpm -r run set-version",
+    "set-version:apply-dep-versions": "ts-node --project .scripts/tsconfig.json .scripts/apply-versions.ts",
     "set-version-placeholders": "pnpm -r run set-version 0.0.0-PLACEHOLDER",
     "actions-build": "pnpm run build",
     "actions-test": "pnpm run test",
@@ -34,9 +35,13 @@
     "*": "prettier --write --ignore-unknown"
   },
   "devDependencies": {
+    "@types/node": "^20.2.5",
+    "fast-glob": "^3.2.12",
     "husky": "^8.0.3",
     "lint-staged": "^13.1.2",
     "npm-run-all2": "^6.0.4",
-    "prettier": "^2.8.4"
+    "prettier": "^2.8.4",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.0.4"
   }
 }

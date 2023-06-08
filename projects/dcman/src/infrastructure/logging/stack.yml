@@ -1,0 +1,9 @@
+version: "3.9"
+# https://elk-docker.readthedocs.io/
+services:
+  email:
+    image: sebp/elk:latest
+    deploy:
+      mode: global
+      restart_policy:
+        condition: on-failure

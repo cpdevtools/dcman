@@ -4,6 +4,7 @@ import { initializeProxyService } from "./proxy/proxy-service";
 import { initializeDevcontainerInfrastructure } from "./dev-containers";
 import { initializeDockerSwarm } from "./swarm/swarm-init";
 import { initializeEmailService } from "./email";
+import { initializeLoggingService } from "./logging";
 
 async function getConfig(id: string) {
   try {
@@ -22,5 +23,6 @@ export function startInfrastructure() {
     initializeDNSService(),
     initializeProxyService(),
     initializeEmailService(),
+    initializeLoggingService(),
   ]);
 }

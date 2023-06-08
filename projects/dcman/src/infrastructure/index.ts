@@ -1,4 +1,5 @@
 export * from "./dns";
-export * from "./proxy";
 export * from "./email";
+export * from "./logging";
+export * from "./proxy";
 export * from "./start";

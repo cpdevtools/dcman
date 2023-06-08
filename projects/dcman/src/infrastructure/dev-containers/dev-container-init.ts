@@ -46,7 +46,6 @@ export async function initializeDockerNetworks() {
       Name: "web-proxy",
       Driver: "bridge",
     });
-    //webProxyNet = await getNetwork('web-proxy');
   }
 
   let webNet = await getNetwork("web");
@@ -55,7 +54,6 @@ export async function initializeDockerNetworks() {
       Name: "web",
       Driver: "bridge",
     });
-    // webNet = await getNetwork('web');
   }
 }
 

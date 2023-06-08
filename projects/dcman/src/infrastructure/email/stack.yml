@@ -1,0 +1,9 @@
+version: "3.9"
+
+services:
+  email:
+    image: gessnerfl/fake-smtp-server:latest
+    deploy:
+      mode: global
+      restart_policy:
+        condition: on-failure

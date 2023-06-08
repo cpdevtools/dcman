@@ -3,6 +3,8 @@ import { initializeDNSService } from "./dns/dns-service";
 import { initializeProxyService } from "./proxy/proxy-service";
 import { initializeDevcontainerInfrastructure } from "./dev-containers";
 import { initializeDockerSwarm } from "./swarm/swarm-init";
+import { initializeEmailService } from "./email";
+import { initializeLoggingService } from "./logging";
 
 async function getConfig(id: string) {
   try {
@@ -15,5 +17,12 @@ async function getConfig(id: string) {
 }
 
 export function startInfrastructure() {
-  return Promise.all([initializeDockerSwarm(), initializeDevcontainerInfrastructure(), initializeDNSService(), initializeProxyService()]);
+  return Promise.all([
+    initializeDockerSwarm(),
+    initializeDevcontainerInfrastructure(),
+    initializeDNSService(),
+    initializeProxyService(),
+    initializeEmailService(),
+    initializeLoggingService(),
+  ]);
 }

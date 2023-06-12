@@ -1,7 +1,7 @@
 version: "3.9"
 # https://elk-docker.readthedocs.io/
 services:
-  logging:
+  elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.8.1
     environment:
       - discovery.type=single-node

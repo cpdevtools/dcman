@@ -4,7 +4,7 @@ services:
   dns:
     image: dcm-dnsmasq:latest
     networks:
-      - host
+      - swarm
     deploy:
       mode: global
       restart_policy:
@@ -17,6 +17,6 @@ services:
       - HTTP_PASS=admin
 
 networks:
-  host:
-    name: host
+  swarm:
+    name: swarm
     external: true

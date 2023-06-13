@@ -55,6 +55,13 @@ export async function initializeDockerNetworks() {
       Driver: "bridge",
     });
   }
+  let swarmNet = await getNetwork("swarm");
+  if (!swarmNet) {
+    await docker.createNetwork({
+      Name: "swarm",
+      Driver: "overlay",
+    });
+  }
 }
 
 export async function initializeDevcontainerInfrastructure() {

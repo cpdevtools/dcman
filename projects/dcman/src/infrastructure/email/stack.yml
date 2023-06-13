@@ -7,3 +7,9 @@ services:
       mode: global
       restart_policy:
         condition: on-failure
+    networks:
+      - email
+
+networks:
+  email:
+    driver: overlay

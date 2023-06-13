@@ -27,12 +27,12 @@ services:
       - "443:443"
       - "8080:8080"
     networks:
-      - host
+      - swarm
 
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
 
 networks:
-  host:
-    name: host
+  swarm:
+    name: swarm
     external: true

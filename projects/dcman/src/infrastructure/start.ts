@@ -18,8 +18,8 @@ async function getConfig(id: string) {
 
 export function startInfrastructure() {
   return Promise.all([
-    initializeDockerSwarm(),
     initializeDevcontainerInfrastructure(),
+    initializeDockerSwarm(),
     initializeDNSService(),
     initializeProxyService(),
     initializeEmailService(),

@@ -1,4 +1,5 @@
 import Dockerode from "dockerode";
+import { Docker as DockerCli, Options } from "docker-cli-js";
 
 export async function initializeDockerCacheVolumes() {
   const docker = new Dockerode();
@@ -41,24 +42,11 @@ async function getNetwork(name: string) {
 export async function initializeDockerNetworks() {
   const docker = new Dockerode();
 
-  let ingressNet = await getNetwork("ingress");
-  if (!ingressNet) {
+  let swarmNet = await getNetwork("swarm");
+  if (!swarmNet) {
     await docker.createNetwork({
-      Name: "ingress",
+      Name: "swarm",
       Driver: "overlay",
-      Ingress: true,
-      Options: {
-        Gateway: "172.16.0.1",
-        Subnet: "172.16.0.0/16",
-      },
-    });
-  }
-
-  let webProxyNet = await getNetwork("web-proxy");
-  if (!webProxyNet) {
-    await docker.createNetwork({
-      Name: "web-proxy",
-      Driver: "bridge",
     });
   }
 
@@ -67,13 +55,6 @@ export async function initializeDockerNetworks() {
     await docker.createNetwork({
       Name: "web",
       Driver: "bridge",
-    });
-  }
-  let swarmNet = await getNetwork("swarm");
-  if (!swarmNet) {
-    await docker.createNetwork({
-      Name: "swarm",
-      Driver: "overlay",
     });
   }
 }

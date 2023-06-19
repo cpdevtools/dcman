@@ -1,4 +1,5 @@
 import Dockerode from "dockerode";
+import { Docker as DockerCli, Options } from "docker-cli-js";
 
 export async function initializeDockerSwarm() {
   const docker = new Dockerode();
@@ -8,25 +9,8 @@ export async function initializeDockerSwarm() {
     return;
   }
 
-  const swarmId = await docker.swarmInit({
-    ListenAddr: "0.0.0.0",
-    Spec: {
-      Name: "default",
-      Orchestration: {
-        TaskHistoryRetentionLimit: 1,
-      },
-      TaskDefaults: {
-        LogDriver: {
-          Name: "json-file",
-          Options: {
-            "max-file": "3",
-            "max-size": "10m",
-          },
-        },
-      },
-      EncryptionConfig: {
-        AutoLockManagers: false,
-      },
-    },
-  });
+  const cwd = __dirname;
+  const cliOpts = new Options(undefined, cwd, true);
+  const cli = new DockerCli(cliOpts);
+  await cli.command(`swarm init --default-addr-pool 10.42.0.0/16`);
 }

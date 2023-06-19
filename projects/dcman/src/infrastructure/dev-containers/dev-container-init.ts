@@ -40,6 +40,20 @@ async function getNetwork(name: string) {
 
 export async function initializeDockerNetworks() {
   const docker = new Dockerode();
+
+  let ingressNet = await getNetwork("ingress");
+  if (!ingressNet) {
+    await docker.createNetwork({
+      Name: "ingress",
+      Driver: "overlay",
+      Ingress: true,
+      Options: {
+        Gateway: "172.16.0.1",
+        Subnet: "172.16.0.0/16",
+      },
+    });
+  }
+
   let webProxyNet = await getNetwork("web-proxy");
   if (!webProxyNet) {
     await docker.createNetwork({

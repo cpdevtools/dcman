@@ -16,13 +16,8 @@ async function getConfig(id: string) {
   }
 }
 
-export function startInfrastructure() {
-  return Promise.all([
-    initializeDockerSwarm(),
-    initializeDevcontainerInfrastructure(),
-    initializeDNSService(),
-    initializeProxyService(),
-    initializeEmailService(),
-    initializeLoggingService(),
-  ]);
+export async function startInfrastructure() {
+  await initializeDockerSwarm();
+  await initializeDevcontainerInfrastructure();
+  await Promise.all([initializeDNSService(), initializeProxyService(), initializeEmailService(), initializeLoggingService()]);
 }

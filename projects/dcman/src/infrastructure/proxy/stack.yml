@@ -2,15 +2,17 @@ version: "3.9"
 
 services:
   proxy:
-    image: "traefik:v2.6"
+    image: dcm-proxy:latest
     command:
       - "--log.level=DEBUG"
       - "--accessLog=true"
+      - "--accessLog.format=json"
+      - "--accessLog.filePath=/var/log/traefik/access.log.json"
       - "--api.insecure=true"
       - "--api.dashboard=true"
 
       - "--providers.docker=true"
-      - "--providers.docker.exposedByDefault=false"
+      - "--providers.docker.exposedByDefault=true"
       - "--providers.docker.swarmMode=true"
       - "--providers.docker.watch=true"
 
@@ -26,6 +28,14 @@ services:
       - "80:80"
       - "443:443"
       - "8080:8080"
+
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.services.dcm-infrastructure-proxy.loadbalancer.server.port=8080"
+        - "traefik.http.routers.dcm-infrastructure-proxy.entrypoints=web"
+        - "traefik.http.routers.dcm-infrastructure-proxy.rule=Host(`proxy.localhost`)"
+
     networks:
       - swarm
 

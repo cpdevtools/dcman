@@ -4,12 +4,18 @@ services:
   email:
     image: gessnerfl/fake-smtp-server:latest
     deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.services.dcm-infrastructure-email.loadbalancer.server.port=8080"
+        - "traefik.http.routers.dcm-infrastructure-email.entrypoints=web"
+        - "traefik.http.routers.dcm-infrastructure-email.rule=Host(`email.localhost`)"
+
       mode: global
       restart_policy:
         condition: on-failure
     networks:
-      - email
+      - swarm
 
 networks:
-  email:
-    driver: overlay
+  swarm:
+    external: true

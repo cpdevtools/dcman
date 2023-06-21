@@ -1,0 +1,21 @@
+FROM traefik:v2.10.1
+
+ARG VERSION=8.8.1
+RUN apk add curl libc6-compat jq
+
+WORKDIR /filebeat
+RUN curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-8.8.1-linux-x86_64.tar.gz
+RUN tar xzvf filebeat-8.8.1-linux-x86_64.tar.gz
+
+
+WORKDIR /filebeat/filebeat-8.8.1-linux-x86_64
+
+COPY filebeat.yml entrypoint.sh ./
+RUN chmod +x entrypoint.sh
+
+RUN ./filebeat modules enable traefik
+
+ENTRYPOINT ["./entrypoint.sh"]
+
+# RUN ./filebeat setup
+# RUN ./filebeat -e

@@ -3,11 +3,26 @@ version: "3.9"
 services:
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.8.1
+    hostname: elasticsearch
     environment:
       - discovery.type=single-node
       - xpack.security.enabled=false
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    cap_add:
+      - IPC_LOCK
+    volumes:
+      - elasticsearch-data-volume:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
     networks:
-      - logging
+      - swarm
+
     deploy:
       mode: global
       restart_policy:
@@ -15,14 +30,13 @@ services:
 
   logstash:
     image: docker.elastic.co/logstash/logstash:8.8.1
+    hostname: logstash
     depends_on:
       - elasticsearch
     ports:
-      - 12201:12201/udp
+      - 5044:5044
     # volumes:
     #   - ./logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
-    networks:
-      - logging
     deploy:
       mode: global
       restart_policy:
@@ -30,17 +44,29 @@ services:
 
   kibana:
     image: docker.elastic.co/kibana/kibana:8.8.1
-    depends_on:
-      - logstash
-    ports:
-      - 5601:5601
-    networks:
-      - logging
+    hostname: kibana
     deploy:
       mode: global
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.services.dcm-infrastructure-kibana.loadbalancer.server.port=5601"
+        - "traefik.http.routers.dcm-infrastructure-kibana.entrypoints=web"
+        - "traefik.http.routers.dcm-infrastructure-kibana.rule=Host(`logs.localhost`)"
       restart_policy:
         condition: on-failure
+    depends_on:
+      - elasticsearch
+    environment:
+      SERVER_NAME: kibana
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+    networks:
+      - swarm
+
+volumes:
+  elasticsearch-data-volume:
+    driver: local
 
 networks:
-  logging:
-    driver: overlay
+  swarm:
+    name: swarm
+    external: true

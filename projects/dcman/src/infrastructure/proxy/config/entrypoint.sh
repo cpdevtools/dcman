@@ -1,7 +1,5 @@
 #!/bin/sh
-
-./filebeat setup
-./filebeat -e &
+./filebeat-start.sh &
 
 set -e
 

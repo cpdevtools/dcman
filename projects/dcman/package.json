@@ -25,7 +25,8 @@
   "dependencies": {
     "docker-cli-js": "^2.10.0",
     "dockerode": "^3.3.5",
-    "node-docker-api": "^1.1.22"
+    "node-docker-api": "^1.1.22",
+    "simple-git": "^3.19.1"
   },
   "devDependencies": {
     "@types/dockerode": "^3.3.18",

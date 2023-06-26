@@ -27,7 +27,7 @@
     "typescript": "^5.0.4"
   },
   "dependencies": {
-    "@cpdevtools/dcman": "0.0.0-PLACEHOLDER",
+    "@cpdevtools/dcman": "workspace:*",
     "yargs": "^17.7.2"
   }
 }

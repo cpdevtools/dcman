@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { startInfrastructure } from "@cpdevtools/dcman";
+import { startInfrastructure, syncDevContainer } from "@cpdevtools/dcman";
 
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
@@ -91,6 +91,7 @@ const args = yargs(hideBin(process.argv))
         },
         async (yargs) => {
           // await startInfrastructure();
+          await syncDevContainer();
         }
       );
   })

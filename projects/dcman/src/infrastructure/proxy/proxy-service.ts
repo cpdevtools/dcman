@@ -1,5 +1,6 @@
 import { Docker as DockerCli, Options } from "docker-cli-js";
 import Dockerode from "dockerode";
+import { ensureDockerServiceStarted } from "../util/docker-util";
 
 export async function initializeProxyService() {
   const docker = new Dockerode();
@@ -19,11 +20,12 @@ export async function initializeProxyService() {
   const r = await new Promise((resolve, reject) => {
     docker.modem.followProgress(stream, (err, res) => (err ? reject(err) : resolve(res)));
   });
-  console.log("Built image");
-  console.log(r);
+  // console.log("Built image");
+  // console.log(r);
 
-  const cliOpts = new Options(undefined, cwd, true);
-  const cli = new DockerCli(cliOpts);
-  await cli.command(`stack deploy -c stack.yml dcm-infrastructure`);
-  //await cli.command(`service update dcm-infrastructure_proxy --force --quiet`);
+  // const cliOpts = new Options(undefined, cwd, true);
+  // const cli = new DockerCli(cliOpts);
+  // await cli.command(`stack deploy -c stack.yml dcm-infrastructure`);
+  // //await cli.command(`service update dcm-infrastructure_proxy --force --quiet`);
+  await ensureDockerServiceStarted("dcm-infrastructure_proxy", cwd);
 }

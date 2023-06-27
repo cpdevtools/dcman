@@ -1,7 +1,7 @@
 import { simpleGit } from "simple-git";
 
 export async function syncDevContainer() {
-  const path = "/workspaces";
+  const path = process.env.CONTAINER_FOLDER;
   const git = simpleGit(path);
   await git.add(".");
   await git.commit("Auto sync", undefined);

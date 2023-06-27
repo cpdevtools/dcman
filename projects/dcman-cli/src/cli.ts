@@ -20,6 +20,7 @@ const args = yargs(hideBin(process.argv))
           });
         },
         async (yargs) => {
+          await syncDevContainer(true);
           await startInfrastructure();
         }
       )

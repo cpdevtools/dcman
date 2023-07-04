@@ -23,6 +23,7 @@
     "set-version:npm": "pnpm version --allow-same-version --commit-hooks=false --git-tag-version=false"
   },
   "dependencies": {
+    "@cpdevtools/lib-node-utilities": "^0.4.49",
     "docker-cli-js": "^2.10.0",
     "dockerode": "^3.3.5",
     "node-docker-api": "^1.1.22",

@@ -1,12 +1,22 @@
 #!/usr/bin/env node
 
-import { startInfrastructure, syncDevContainer } from "@cpdevtools/dcman";
+import { checkGithubToken, ensureGithubLogin, startInfrastructure, syncDevContainer } from "@cpdevtools/dcman";
 
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 
 const args = yargs(hideBin(process.argv))
   .scriptName("dcm")
+  .command(
+    "test",
+    "test stuff",
+    (yargs) => {
+      return yargs;
+    },
+    async (yargs) => {
+      await ensureGithubLogin();
+    }
+  )
   .command("dc-event", "event callbacks", (yargs) => {
     return yargs
       .command(
@@ -22,6 +32,7 @@ const args = yargs(hideBin(process.argv))
         async (yargs) => {
           await syncDevContainer(true);
           await startInfrastructure();
+          await ensureGithubLogin();
         }
       )
       .command(

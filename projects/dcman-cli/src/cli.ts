@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { ensureGithubLogin, startInfrastructure, syncDevContainer } from "@cpdevtools/dcman";
+import { checkGithubToken, ensureGithubLogin, startInfrastructure, syncDevContainer } from "@cpdevtools/dcman";
 
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
@@ -32,6 +32,7 @@ const args = yargs(hideBin(process.argv))
         async (yargs) => {
           await syncDevContainer(true);
           await startInfrastructure();
+          await ensureGithubLogin();
         }
       )
       .command(

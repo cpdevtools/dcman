@@ -13,6 +13,7 @@
     "declaration": true,
     "inlineSourceMap": true,
     "resolveJsonModule": true,
+    "skipLibCheck": true,
     "strict": true,
     "noImplicitOverride": true,
     "pretty": true,

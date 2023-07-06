@@ -1,4 +1,4 @@
-import { PackageManager, readJsonFile, writeJsonFile, start } from "@cpdevtools/lib-node-utilities";
+import { PackageManager, readJsonFile, start, writeJsonFile } from "@cpdevtools/lib-node-utilities";
 import { watch } from "chokidar";
 import { existsSync } from "fs";
 import { mkdir, readdir } from "fs/promises";
@@ -24,7 +24,7 @@ export function writeWorkspaceFile(workspaceFile: string, data: CodeWorkspace) {
 
 export function readWorkspaceFile(workspaceFile: string) {
   const workspacePath = join(workspacesDir, workspaceFile);
-  return readJsonFile(workspacePath);
+  return readJsonFile<CodeWorkspace>(workspacePath);
 }
 
 export async function syncGitReposInWorkSpace(workspaceFile: string) {
@@ -44,9 +44,6 @@ export async function syncGitReposInWorkSpace(workspaceFile: string) {
         let projectPathExists = existsSync(projectPath) && (await readdir(projectPath)).length !== 0;
         let repoUri = proj.repository;
 
-        console.info("Project Path Exists:", projectPathExists);
-        console.info("Project Repo Uri:", repoUri);
-
         if (!projectPathExists && repoUri) {
           console.info("Cloning", repoUri, "to", projectPath);
           await mkdir(projectPath, { recursive: true });
@@ -55,31 +52,40 @@ export async function syncGitReposInWorkSpace(workspaceFile: string) {
           console.info(repoUri, "cloned.");
           await runPmInstall(projectPath);
         } else if (projectPathExists && !repoUri) {
+          const git = simpleGit(projectPath);
+          if (await git.checkIsRepo()) {
+            const remote = (await git.getRemotes(true)).find((r) => r.name === "origin");
+            if (remote) {
+              proj.repository = repoUri = remote.refs.fetch;
+              workspaceChanged = true;
+            }
+          }
+        } else if (projectPathExists && repoUri) {
           // make sure the origin repo matches workspace file, origin wins
           const git = simpleGit(projectPath);
           if (await git.checkIsRepo()) {
             const remote = (await git.getRemotes(true)).find((r) => r.name === "origin");
             if (remote) {
-              if (proj.repository !== remote.refs.fetch) {
+              if (repoUri !== remote.refs.fetch) {
                 console.info(`Updating ${repoUri} to ${remote.refs.fetch} in workspace ${workspaceFile}`);
-                proj.repository = remote.refs.fetch;
+                proj.repository = repoUri = remote.refs.fetch;
                 workspaceChanged = true;
-              } else {
-                console.info(`Adding ${repoUri} as remote: "origin"`);
-                await git.addRemote("origin", repoUri);
               }
             } else {
-              console.warn(`${projectPath} is a not git repo. Expected repo of ${repoUri}`);
+              console.info(`Adding ${repoUri} as remote: "origin"`);
+              await git.addRemote("origin", repoUri);
             }
           }
-          console.groupEnd();
+        } else {
+          console.warn(`${projectPath} is a not git repo. Expected repo of ${repoUri}`);
         }
+        console.groupEnd();
       }
-      if (workspaceChanged) {
-        await writeWorkspaceFile(workspaceFile, workspace);
-      }
-      console.groupEnd();
     }
+    if (workspaceChanged) {
+      await writeWorkspaceFile(workspaceFile, workspace);
+    }
+    console.groupEnd();
   } catch (e) {
     console.error(e);
   }
@@ -110,5 +116,5 @@ export async function watchAndSyncWorkspaces() {
 }
 
 export async function startWorkspaceWatcher() {
-  start;
+  await start("dcm dc-workspaces watch");
 }

@@ -1,6 +1,14 @@
 #!/usr/bin/env node
 
-import { checkGithubToken, ensureGithubLogin, startInfrastructure, syncDevContainer, syncGitReposInWorkSpaces } from "@cpdevtools/dcman";
+import {
+  checkGithubToken,
+  ensureGithubLogin,
+  startInfrastructure,
+  startWorkspaceWatcher,
+  syncDevContainer,
+  syncGitReposInWorkSpaces,
+  watchAndSyncWorkspaces,
+} from "@cpdevtools/dcman";
 
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
@@ -15,6 +23,16 @@ const args = yargs(hideBin(process.argv))
     },
     async (yargs) => {
       await ensureGithubLogin();
+    }
+  )
+  .command(
+    "dc-workspaces watch",
+    "watch workspaces",
+    (yargs) => {
+      return yargs;
+    },
+    async (yargs) => {
+      await watchAndSyncWorkspaces();
     }
   )
   .command("dc-event", "event callbacks", (yargs) => {
@@ -47,6 +65,7 @@ const args = yargs(hideBin(process.argv))
         },
         async (yargs) => {
           await syncGitReposInWorkSpaces();
+          await startWorkspaceWatcher();
         }
       )
       .command(

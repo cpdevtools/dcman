@@ -29,8 +29,5 @@
   "dependencies": {
     "@cpdevtools/dcman": "0.0.0-PLACEHOLDER",
     "yargs": "^17.7.2"
-  },
-  "resolutions": {
-    "@cpdevtools/dcman": "link:../dcman"
   }
 }

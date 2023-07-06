@@ -96,4 +96,12 @@ const args = yargs(hideBin(process.argv))
         }
       );
   })
+  .command(
+    "dc-monitor",
+    "monitor dev container",
+    (yargs) => {
+      return yargs;
+    },
+    async () => {}
+  )
   .parse();

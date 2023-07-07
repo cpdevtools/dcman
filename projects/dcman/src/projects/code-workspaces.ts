@@ -1,12 +1,10 @@
 import { PackageManager, readJsonFile, start, writeJsonFile } from "@cpdevtools/lib-node-utilities";
 import { watch } from "chokidar";
+import { WORKSPACES_DIR } from "../constants/paths";
 import { existsSync } from "fs";
 import { mkdir, readdir } from "fs/promises";
 import { extname, join } from "path";
 import simpleGit from "simple-git";
-
-export const workspacesDir = "/devcontainer/workspaces";
-export const projectsDir = "/devcontainer/projects";
 
 export interface CodeWorkspace {
   folders: {
@@ -18,12 +16,12 @@ export interface CodeWorkspace {
 }
 
 export function writeWorkspaceFile(workspaceFile: string, data: CodeWorkspace) {
-  const workspacePath = join(workspacesDir, workspaceFile);
+  const workspacePath = join(WORKSPACES_DIR, workspaceFile);
   return writeJsonFile(workspacePath, data, 4);
 }
 
 export function readWorkspaceFile(workspaceFile: string) {
-  const workspacePath = join(workspacesDir, workspaceFile);
+  const workspacePath = join(WORKSPACES_DIR, workspaceFile);
   return readJsonFile<CodeWorkspace>(workspacePath);
 }
 
@@ -38,7 +36,7 @@ export async function syncGitReposInWorkSpace(workspaceFile: string) {
 
     for (const proj of workspace.folders) {
       if (proj.path.startsWith("../projects/")) {
-        const projectPath = join(workspacesDir, proj.path);
+        const projectPath = join(WORKSPACES_DIR, proj.path);
         console.info("Synchronizing Project:", projectPath);
         console.group();
         let projectPathExists = existsSync(projectPath) && (await readdir(projectPath)).length !== 0;
@@ -100,7 +98,7 @@ async function runPmInstall(path: string) {
 }
 
 export async function syncGitReposInWorkSpaces() {
-  const workspaces = await readdir(workspacesDir);
+  const workspaces = await readdir(WORKSPACES_DIR);
   for (const workspace of workspaces) {
     const ext = extname(workspace);
     if (ext === ".code-workspace") {
@@ -110,7 +108,7 @@ export async function syncGitReposInWorkSpaces() {
 }
 
 export async function watchAndSyncWorkspaces() {
-  watch(["*.code-workspace"], { cwd: workspacesDir, ignoreInitial: true }).on("all", (e, p, s) => {
+  watch(["*.code-workspace"], { cwd: WORKSPACES_DIR, ignoreInitial: true }).on("all", (e, p, s) => {
     syncGitReposInWorkSpace(p);
   });
 }

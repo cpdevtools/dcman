@@ -3,10 +3,12 @@
 import {
   checkGithubToken,
   ensureGithubLogin,
+  startDevContainerSyncWatcher,
   startInfrastructure,
   startWorkspaceWatcher,
   syncDevContainer,
   syncGitReposInWorkSpaces,
+  watchAndSyncDevContainer,
   watchAndSyncWorkspaces,
 } from "@cpdevtools/dcman";
 
@@ -22,7 +24,8 @@ const args = yargs(hideBin(process.argv))
       return yargs;
     },
     async (yargs) => {
-      await ensureGithubLogin();
+      //await syncDevContainer();
+      await watchAndSyncDevContainer();
     }
   )
   .command(
@@ -33,6 +36,16 @@ const args = yargs(hideBin(process.argv))
     },
     async (yargs) => {
       await watchAndSyncWorkspaces();
+    }
+  )
+  .command(
+    "dc-devcontainer watch",
+    "watch devcontainer",
+    (yargs) => {
+      return yargs;
+    },
+    async (yargs) => {
+      await watchAndSyncDevContainer();
     }
   )
   .command("dc-event", "event callbacks", (yargs) => {
@@ -66,6 +79,7 @@ const args = yargs(hideBin(process.argv))
         async (yargs) => {
           await syncGitReposInWorkSpaces();
           await startWorkspaceWatcher();
+          await startDevContainerSyncWatcher();
         }
       )
       .command(

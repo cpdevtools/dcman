@@ -3,7 +3,7 @@ import { watch } from "chokidar";
 import { DEVCONTAINER_DIR } from "../constants/paths";
 
 export async function syncDevContainer(onHost: boolean = false) {
-  const path = (onHost ? process.env.HOST_CONTAINER_FOLDER : process.env.CONTAINER_FOLDER) || DEVCONTAINER_DIR;
+  const path = onHost ? "." : process.env.CONTAINER_FOLDER || DEVCONTAINER_DIR;
   if (await gitHasChanges(path)) {
     console.info("Syncing Dev Container...");
     await gitSync(path);

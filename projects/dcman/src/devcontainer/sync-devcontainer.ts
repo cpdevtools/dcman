@@ -13,9 +13,14 @@ export async function syncDevContainer(onHost: boolean = false) {
 
 export async function watchAndSyncDevContainer() {
   const path = process.env.CONTAINER_FOLDER || DEVCONTAINER_DIR;
-  watch(["**/*", "!node_modules/**", "!projects/**"], { cwd: path, ignoreInitial: true }).on("all", async (evt, path, lstat) => {
-    syncDevContainer();
-  });
+  console.info(`Watching Dev Container: ${path}`);
+  watch(["**/*", "!node_modules/**", "!projects/**", "!.git/**"], { cwd: path, ignoreInitial: true }).on(
+    "all",
+    async (evt, path, lstat) => {
+      console.info(`Dev Container: ${evt} ${path}`);
+      syncDevContainer();
+    }
+  );
 }
 
 export async function startDevContainerSyncWatcher() {

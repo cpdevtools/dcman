@@ -3,6 +3,7 @@
 import {
   checkGithubToken,
   ensureGithubLogin,
+  startDevContainerSyncWatcher,
   startInfrastructure,
   startWorkspaceWatcher,
   syncDevContainer,
@@ -66,6 +67,7 @@ const args = yargs(hideBin(process.argv))
         async (yargs) => {
           await syncGitReposInWorkSpaces();
           await startWorkspaceWatcher();
+          await startDevContainerSyncWatcher();
         }
       )
       .command(

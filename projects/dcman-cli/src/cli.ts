@@ -8,6 +8,7 @@ import {
   startWorkspaceWatcher,
   syncDevContainer,
   syncGitReposInWorkSpaces,
+  watchAndSyncDevContainer,
   watchAndSyncWorkspaces,
 } from "@cpdevtools/dcman";
 
@@ -23,7 +24,7 @@ const args = yargs(hideBin(process.argv))
       return yargs;
     },
     async (yargs) => {
-      await ensureGithubLogin();
+      await syncDevContainer();
     }
   )
   .command(
@@ -34,6 +35,16 @@ const args = yargs(hideBin(process.argv))
     },
     async (yargs) => {
       await watchAndSyncWorkspaces();
+    }
+  )
+  .command(
+    "dc-devcontainer watch",
+    "watch devcontainer",
+    (yargs) => {
+      return yargs;
+    },
+    async (yargs) => {
+      await watchAndSyncDevContainer();
     }
   )
   .command("dc-event", "event callbacks", (yargs) => {

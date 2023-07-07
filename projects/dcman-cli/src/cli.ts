@@ -24,8 +24,8 @@ const args = yargs(hideBin(process.argv))
       return yargs;
     },
     async (yargs) => {
-      //await syncDevContainer();
-      await watchAndSyncDevContainer();
+      await startWorkspaceWatcher();
+      await startDevContainerSyncWatcher();
     }
   )
   .command(

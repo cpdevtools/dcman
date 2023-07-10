@@ -123,7 +123,7 @@ export class GithubUser {
     await git.addConfig("user.name", this.name!, false, "global");
     await git.addConfig("user.email", this.email!, false, "global");
     await git.addConfig("pull.rebase", "false", false, "global");
-    envVars("GH_TOKEN", this.token!);
+    envVars("GH_AUTH_TOKEN", this.token!);
   }
 
   public get username() {

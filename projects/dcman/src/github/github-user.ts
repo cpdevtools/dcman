@@ -1,4 +1,4 @@
-import { GithubAuthStatus, exec, githubAuthStatus } from "@cpdevtools/lib-node-utilities";
+import { GithubAuthStatus, exec, githubAuthStatus, envVars } from "@cpdevtools/lib-node-utilities";
 import { Octokit } from "@octokit/rest";
 import simpleGit from "simple-git";
 
@@ -123,6 +123,7 @@ export class GithubUser {
     await git.addConfig("user.name", this.name!, false, "global");
     await git.addConfig("user.email", this.email!, false, "global");
     await git.addConfig("pull.rebase", "false", false, "global");
+    envVars("GH_TOKEN", this.token!);
   }
 
   public get username() {

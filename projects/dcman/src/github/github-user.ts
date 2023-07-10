@@ -124,7 +124,7 @@ export class GithubUser {
     await git.addConfig("user.name", this.name!, false, "global");
     await git.addConfig("user.email", this.email!, false, "global");
     await git.addConfig("pull.rebase", "false", false, "global");
-    await writeFile(`.devcontainer/.token.env`, `GITHUB_AUTH_TOKEN=${this.token!}`, { encoding: "utf-8" });
+    await writeFile(`.devcontainer/.token.env`, `GITHUB_TOKEN=${this.token!}`, { encoding: "utf-8" });
   }
 
   public get username() {

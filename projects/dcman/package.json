@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "@cpdevtools/lib-node-utilities": "^0.4.52",
+    "@octokit/rest": "^19.0.13",
     "chokidar": "^3.5.3",
     "docker-cli-js": "^2.10.0",
     "dockerode": "^3.3.5",

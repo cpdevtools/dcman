@@ -8,6 +8,7 @@
     "moduleResolution": "Node",
     "moduleDetection": "force",
     "allowJs": true,
+
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "declaration": true,

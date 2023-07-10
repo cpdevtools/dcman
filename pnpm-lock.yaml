@@ -40,6 +40,9 @@ importers:
       "@cpdevtools/lib-node-utilities":
         specifier: ^0.4.52
         version: 0.4.52
+      "@octokit/rest":
+        specifier: ^19.0.13
+        version: 19.0.13
       chokidar:
         specifier: ^3.5.3
         version: 3.5.3

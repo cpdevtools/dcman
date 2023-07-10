@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 import {
-  checkGithubToken,
   ensureGithubLogin,
+  githubLogout,
   startDevContainerSyncWatcher,
   startInfrastructure,
   startWorkspaceWatcher,
@@ -24,8 +24,27 @@ const args = yargs(hideBin(process.argv))
       return yargs;
     },
     async (yargs) => {
-      await startWorkspaceWatcher();
-      await startDevContainerSyncWatcher();
+      await ensureGithubLogin();
+    }
+  )
+  .command(
+    "login",
+    "login to github",
+    (yargs) => {
+      return yargs;
+    },
+    async (yargs) => {
+      await ensureGithubLogin();
+    }
+  )
+  .command(
+    "logout",
+    "logout of github",
+    (yargs) => {
+      return yargs;
+    },
+    async (yargs) => {
+      await githubLogout();
     }
   )
   .command(
@@ -61,9 +80,9 @@ const args = yargs(hideBin(process.argv))
           });
         },
         async (yargs) => {
+          await ensureGithubLogin();
           await syncDevContainer(true);
           await startInfrastructure();
-          await ensureGithubLogin();
         }
       )
       .command(

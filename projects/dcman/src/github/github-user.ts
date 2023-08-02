@@ -1,5 +1,6 @@
 import { GithubAuthStatus, exec, githubAuthStatus } from "@cpdevtools/lib-node-utilities";
 import { Octokit } from "@octokit/rest";
+import { existsSync } from "fs";
 import { writeFile } from "fs/promises";
 import simpleGit from "simple-git";
 
@@ -124,7 +125,9 @@ export class GithubUser {
     await git.addConfig("user.name", this.name!, false, "global");
     await git.addConfig("user.email", this.email!, false, "global");
     await git.addConfig("pull.rebase", "false", false, "global");
-    await writeFile(`.devcontainer/.token.env`, `GITHUB_TOKEN=${this.token!}`, { encoding: "utf-8" });
+    if (existsSync(`.devcontainer`)) {
+      await writeFile(`.devcontainer/.token.env`, `GITHUB_TOKEN=${this.token!}`, { encoding: "utf-8" });
+    }
   }
 
   public get username() {
@@ -157,5 +160,9 @@ export class GithubUser {
 
   public get url() {
     return this._userData?.url;
+  }
+
+  public get repos(): any {
+    return this._octokit?.repos.listForAuthenticatedUser;
   }
 }

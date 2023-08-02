@@ -3,6 +3,7 @@
 import {
   ensureGithubLogin,
   githubLogout,
+  openDevcontainer,
   startDevContainerSyncWatcher,
   startInfrastructure,
   startWorkspaceWatcher,
@@ -65,6 +66,21 @@ const args = yargs(hideBin(process.argv))
     },
     async (yargs) => {
       await watchAndSyncDevContainer();
+    }
+  )
+  .command(
+    "open",
+    "event callbacks",
+    (yargs) => {
+      return yargs.positional("container", {
+        describe: "Github repo url or owner/repo",
+        type: "string",
+      });
+    },
+    async (yargs) => {
+      // await ensureGithubLogin();
+      console.log("yargs", yargs);
+      await openDevcontainer(yargs.container);
     }
   )
   .command("dc-event", "event callbacks", (yargs) => {

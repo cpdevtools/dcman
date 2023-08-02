@@ -1,4 +1,5 @@
 import { githubLogin, importInquirer, readYamlFile } from "@cpdevtools/lib-node-utilities";
+import { DCM_DIR } from "../constants";
 import { existsSync } from "fs";
 import { mkdir } from "fs/promises";
 
@@ -9,12 +10,7 @@ export interface DCMHostConfig {
 }
 
 export async function getHostConfigDir() {
-  const homeDir = process.env.HOME;
-  if (!homeDir) {
-    throw new Error("HOME environment variable not set");
-  }
-  const configDir = `${homeDir}/.dcm`;
-  return configDir;
+  return DCM_DIR;
 }
 
 export async function ensureHostConfig() {

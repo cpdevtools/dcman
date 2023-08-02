@@ -70,7 +70,7 @@ const args = yargs(hideBin(process.argv))
   )
   .command(
     "open",
-    "event callbacks",
+    "description goes here",
     (yargs) => {
       return yargs.positional("container", {
         describe: "Github repo url or owner/repo",
@@ -96,6 +96,7 @@ const args = yargs(hideBin(process.argv))
           });
         },
         async (yargs) => {
+          console.log("yargs", yargs);
           await ensureGithubLogin();
           await syncDevContainer(true);
           await startInfrastructure();

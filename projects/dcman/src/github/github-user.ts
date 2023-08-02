@@ -1,8 +1,11 @@
 import { GithubAuthStatus, exec, githubAuthStatus } from "@cpdevtools/lib-node-utilities";
 import { Octokit } from "@octokit/rest";
+import { OctokitResponse, Endpoints } from "@octokit/types";
 import { existsSync } from "fs";
 import { writeFile } from "fs/promises";
 import simpleGit from "simple-git";
+
+export type ListForAuthenticatedUserData = Endpoints["GET /repositories"]["response"]["data"];
 
 export interface GithubUserData {
   login: string;
@@ -162,7 +165,9 @@ export class GithubUser {
     return this._userData?.url;
   }
 
-  public get repos(): any {
-    return this._octokit?.repos.listForAuthenticatedUser;
+  public get repos() {
+    return this._octokit?.repos.listForAuthenticatedUser({ per_page: 1000, page: 4 }) as Promise<
+      OctokitResponse<ListForAuthenticatedUserData>
+    >;
   }
 }

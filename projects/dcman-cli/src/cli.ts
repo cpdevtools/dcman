@@ -16,6 +16,24 @@ import {
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 
+import isDocker from "is-docker";
+import isWindows from "is-windows";
+
+//import dockerCli from './docker-cli';
+import linuxCli from "./linux-cli";
+import winCli from "./windows-cli";
+
+(async () => {
+  if (isDocker()) {
+    const dockerCli = (await import("./docker-cli")).default;
+    await dockerCli.parseAsync();
+  } else if (isWindows()) {
+    winCli.parse();
+  } else {
+    linuxCli.parse();
+  }
+})();
+
 const args = yargs(hideBin(process.argv))
   .scriptName("dcm")
   .command(
@@ -69,7 +87,7 @@ const args = yargs(hideBin(process.argv))
     }
   )
   .command(
-    "open",
+    "open <container>",
     "description goes here",
     (yargs) => {
       return yargs.positional("container", {
@@ -79,7 +97,6 @@ const args = yargs(hideBin(process.argv))
     },
     async (yargs) => {
       // await ensureGithubLogin();
-      console.log("yargs", yargs);
       await openDevcontainer(yargs.container);
     }
   )
@@ -96,7 +113,6 @@ const args = yargs(hideBin(process.argv))
           });
         },
         async (yargs) => {
-          console.log("yargs", yargs);
           await ensureGithubLogin();
           await syncDevContainer(true);
           await startInfrastructure();

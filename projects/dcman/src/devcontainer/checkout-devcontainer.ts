@@ -59,6 +59,8 @@ export async function openDevcontainer(idOrInfo?: string | DevcontainerInfo) {
 
   if (!(await devcontainerExistsLocally(idOrInfo))) {
     const githubUser = await GithubUser.loadUser();
-    console.log(githubUser.repos);
+    const repos = await githubUser.repos;
+    console.log(repos.headers);
+    console.log(repos.data.map((r) => r.full_name));
   }
 }

@@ -62,6 +62,9 @@ importers:
         specifier: ^3.19.1
         version: 3.19.1
     devDependencies:
+      "@octokit/types":
+        specifier: ^11.1.0
+        version: 11.1.0
       "@types/dockerode":
         specifier: ^3.3.18
         version: 3.3.18
@@ -89,10 +92,22 @@ importers:
       "@cpdevtools/dcman":
         specifier: 0.0.0-PLACEHOLDER
         version: link:../dcman
+      is-docker:
+        specifier: ^2.2.1
+        version: 2.2.1
+      is-windows:
+        specifier: ^1.0.2
+        version: 1.0.2
+      is-wsl:
+        specifier: ^2.2.0
+        version: 2.2.0
       yargs:
         specifier: ^17.7.2
         version: 17.7.2
     devDependencies:
+      "@types/is-windows":
+        specifier: ^1.0.0
+        version: 1.0.0
       "@types/node":
         specifier: ^20.2.5
         version: 20.2.5
@@ -302,7 +317,6 @@ packages:
 
   /@octokit/openapi-types@18.0.0:
     resolution: { integrity: sha512-V8GImKs3TeQRxRtXFpG2wl19V7444NIOTDF24AWuIbmNaNYOQMWRbjcGDXV5B+0n887fgDcuMNOmlul+k+oJtw== }
-    dev: false
 
   /@octokit/plugin-paginate-rest@6.1.2(@octokit/core@4.2.4):
     resolution: { integrity: sha512-qhrmtQeHU/IivxucOV1bbI/xZyC/iOBhclokv7Sut5vnejAIAEXVcGQeRpQlU39E0WwK9lNvJHphHri/DB6lbQ== }
@@ -378,6 +392,12 @@ packages:
       "@octokit/openapi-types": 18.0.0
     dev: false
 
+  /@octokit/types@11.1.0:
+    resolution: { integrity: sha512-Fz0+7GyLm/bHt8fwEqgvRBWwIV1S6wRRyq+V6exRKLVWaKGsuy6H9QFYeBVDV7rK6fO3XwHgQOPxv+cLj2zpXQ== }
+    dependencies:
+      "@octokit/openapi-types": 18.0.0
+    dev: true
+
   /@octokit/types@9.3.2:
     resolution: { integrity: sha512-D4iHGTdAnEEVsB8fl95m1hiz7D5YiRdQ9b/OEb3BYRVwbLsGHcRVPz+u+BgRLNk0Q0/4iZCBqDN96j2XNxfXrA== }
     dependencies:
@@ -415,6 +435,10 @@ packages:
     dependencies:
       "@types/docker-modem": 3.0.2
       "@types/node": 20.2.5
+    dev: true
+
+  /@types/is-windows@1.0.0:
+    resolution: { integrity: sha512-tJ1rq04tGKuIJoWIH0Gyuwv4RQ3+tIu7wQrC0MV47raQ44kIzXSSFKfrxFUOWVRvesoF7mrTqigXmqoZJsXwTg== }
     dev: true
 
   /@types/lodash@4.14.119:
@@ -630,6 +654,7 @@ packages:
   /buildcheck@0.0.6:
     resolution: { integrity: sha512-8f9ZJCUXyT1M35Jx7MkBgmBMo3oHTTBIPLiY9xyL0pl3T5RwcPEY8cUHr5LBNfu/fk6c2T4DJZuVM/8ZZT2D2A== }
     engines: { node: ">=10.0.0" }
+    requiresBuild: true
     dev: false
     optional: true
 
@@ -1270,6 +1295,11 @@ packages:
     engines: { node: ">=12" }
     dev: false
 
+  /is-windows@1.0.2:
+    resolution: { integrity: sha512-eXK1UInq2bPmjyX6e3VHIzMLobc4J94i4AWn+Hpq3OU5KkrRC96OAcR3PRJ/pGu6m8TRnBHP9dkXQVsT/COVIA== }
+    engines: { node: ">=0.10.0" }
+    dev: false
+
   /is-wsl@2.2.0:
     resolution: { integrity: sha512-fKzAra0rGJUUBwGBgNkHZuToZcn+TtXHpeCgmkMJMMYx1sQDYaCSyjJBSCa2nH1DGm7s3n1oBnohoVTBaN7Lww== }
     engines: { node: ">=8" }
@@ -1485,6 +1515,7 @@ packages:
 
   /nan@2.17.0:
     resolution: { integrity: sha512-2ZTgtl0nJsO0KQCjEpxcIr5D+Yv90plTitZt9JBfQvVJDS5seMl3FOvsh3+9CoYWXf/1l5OaZzzF6nDm4cagaQ== }
+    requiresBuild: true
     dev: false
     optional: true
 

@@ -1,9 +1,16 @@
-import { startDevContainerSyncWatcher, startWorkspaceWatcher, syncDevContainer, syncGitReposInWorkSpaces } from "@cpdevtools/dcman";
+import {
+  openDevcontainer,
+  startDevContainerSyncWatcher,
+  startWorkspaceWatcher,
+  syncDevContainer,
+  syncGitReposInWorkSpaces,
+} from "@cpdevtools/dcman";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 
 export default yargs(hideBin(process.argv))
   .scriptName("dcm")
+
   .command("dc-event", "event callbacks", (yargs) => {
     return yargs
       .command(

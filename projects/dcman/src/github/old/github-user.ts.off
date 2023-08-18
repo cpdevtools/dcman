@@ -54,12 +54,12 @@ export interface GithubUserData {
   };
 }
 
-export class GithubUser {
+export class GithubUserOld {
   private static _additionalScopes = ["read:packages", "read:user", "user:email"];
   private static _requiredScopes = ["read:packages", "read:user", "user:email", "read:org", "repo", "workflow"];
 
   public static async loadUser() {
-    const user = new GithubUser();
+    const user = new GithubUserOld();
     await user._load();
     return user;
   }
@@ -86,7 +86,7 @@ export class GithubUser {
     }
 
     while (!this._authStatus?.username) {
-      const success = !(await exec(`gh auth login -h github.com -p https -s ${GithubUser._additionalScopes.join(",")}`));
+      const success = !(await exec(`gh auth login -h github.com -p https -s ${GithubUserOld._additionalScopes.join(",")}`));
       if (success) {
         this._authStatus = await githubAuthStatus();
         this._validateScopes();
@@ -97,7 +97,7 @@ export class GithubUser {
 
   private async _validateScopes() {
     if (this._authStatus?.username) {
-      const missingScopes = GithubUser._requiredScopes.filter((scope) => !this._authStatus?.scopes?.includes(scope));
+      const missingScopes = GithubUserOld._requiredScopes.filter((scope) => !this._authStatus?.scopes?.includes(scope));
       if (missingScopes.length) {
         console.warn(`Missing scopes: ${missingScopes.join(", ")}`);
         const success = !(await exec(`gh auth refresh --insecure-storage -h github.com -s ${missingScopes.join(",")}`));
@@ -166,7 +166,7 @@ export class GithubUser {
   }
 
   public get repos() {
-    return this._octokit?.repos.listForAuthenticatedUser({ per_page: 1000, page: 4 }) as Promise<
+    return this._octokit?.repos.listForAuthenticatedUser({ per_page: 1000, page: 1,  }) as Promise<
       OctokitResponse<ListForAuthenticatedUserData>
     >;
   }

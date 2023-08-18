@@ -1,10 +1,10 @@
 import { dockerLogin, envVars, exec, githubAuthStatus, importInquirer } from "@cpdevtools/lib-node-utilities";
 
 import { simpleGit } from "simple-git";
-import { GithubUser } from "./github-user";
+import { GithubUserOld } from "./github-user";
 
 export async function ensureGithubLogin() {
-  const user = await GithubUser.loadUser();
+  const user = await GithubUserOld.loadUser();
   await dockerLogin("https://ghcr.io", user.username!, user.token!);
 }
 

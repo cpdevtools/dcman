@@ -1,7 +1,6 @@
 import { existsSync } from "fs";
 import Path from "path";
 import { DCM_CONTAINER_DIR } from "../constants";
-import { GithubUser } from "../github";
 
 export interface DevcontainerInfo {
   owner: string;
@@ -58,9 +57,9 @@ export async function openDevcontainer(idOrInfo?: string | DevcontainerInfo) {
   }
 
   if (!(await devcontainerExistsLocally(idOrInfo))) {
-    const githubUser = await GithubUser.loadUser();
-    const repos = await githubUser.repos;
-    console.log(repos.headers);
-    console.log(repos.data.map((r) => r.full_name));
+    // const githubUser = await GithubUserOld.loadUser();
+    // const repos = await githubUser.repos;
+    // console.log(repos.headers);
+    // console.log(repos.data.map((r) => r.full_name));
   }
 }

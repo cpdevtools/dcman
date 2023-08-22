@@ -168,12 +168,28 @@ export default yargs(hideBin(process.argv))
     "profile",
     (yargs) => {
       return yargs.command(
-        "set",
+        "set <profile>",
         "set active profile",
-        (yargs) => yargs,
+        (yargs) =>
+          yargs.positional("profile", {
+            describe: "The profile to set as active",
+            type: "string",
+            demandOption: true,
+          }),
         async (yargs) => {
           await initializeCli();
           const pm = await ProfileManager.instance;
+          const hasProfile = await pm.hasProfile(yargs.profile);
+          if (!hasProfile) {
+            throw new Error(`Profile '${yargs.profile}' does not exist`);
+          }
+          await pm.setActiveProfile(yargs.profile);
+          printAsYaml(
+            {
+              "Active Profile": (await pm.activeProfileId) ?? "None",
+            },
+            { cliColor: true }
+          );
         }
       );
     },
@@ -199,7 +215,6 @@ export default yargs(hideBin(process.argv))
       });
     },
     async (yargs) => {
-      // await ensureGithubLogin();
       await openDevcontainer(yargs.container);
     }
   )

@@ -4,8 +4,9 @@ import { DCM_CONFIG_DIR } from "../constants";
 import { GithubSession } from "../github";
 
 import { glob } from "fast-glob";
-import { cp, realpath, rm, symlink, unlink, mkdir } from "fs/promises";
+import { cp, mkdir, realpath, rm, symlink, unlink } from "fs/promises";
 import { dirname } from "path";
+import { cwd } from "process";
 
 const PROFILES_DIR = `${DCM_CONFIG_DIR}/profiles`;
 const PROFILE_DIR = `${DCM_CONFIG_DIR}/profile`;
@@ -52,6 +53,16 @@ export class ProfileManager {
     }
     return this._instancePromise;
   }
+
+  public static async exitIfNoProfile() {
+    const pm = await this.instance;
+    if (!(await pm.activeProfile)) {
+      console.error("No active profile. Please set an active profile with 'dcm profile set <profile>'");
+      process.exit(1);
+    }
+  }
+
+  private _activeProfilePromise?: Promise<Profile | undefined>;
 
   private constructor() {}
 
@@ -110,15 +121,24 @@ export class ProfileManager {
     return existsSync(`${await this.basePath}/${source}/profiles.yml`);
   }
 
-  public async hasProfile(source: string, profile: string) {
+  public async hasProfile(profileId: string): Promise<boolean>;
+  public async hasProfile(source: string, profile: string): Promise<boolean>;
+  public async hasProfile(source: string, profile?: string): Promise<boolean> {
+    if (profile === undefined) {
+      const parts = source.split("#");
+      source = parts[0];
+      profile = parts[1] || "default";
+    }
+
     if (profile === "default") {
       profile = await this._getDefaultProfileName(source);
     }
-    return existsSync(`${await this.basePath}/${source}/${profile}/profile.yml`);
+    const filePath = `${await this.basePath}/${source}/profiles/${profile}/profile.yml`;
+    return existsSync(filePath);
   }
 
   private async _getDefaultProfileName(source: string): Promise<string> {
-    return (await this._readProfileSourceConfig(source)).defaultProfile || "default";
+    return (await this._readProfileSourceConfig(source))?.defaultProfile || "default";
   }
   private async _readProfile(): Promise<Profile | undefined>;
   private async _readProfile(id: string): Promise<Profile | undefined>;
@@ -132,8 +152,12 @@ export class ProfileManager {
     return undefined;
   }
 
-  private async _readProfileSourceConfig(source: string): Promise<ProfileSourceConfig> {
-    return await readYamlFile(`${await this.basePath}/${source}/profiles.yml`);
+  private async _readProfileSourceConfig(source: string): Promise<ProfileSourceConfig | undefined> {
+    const path = `${await this.basePath}/${source}/profiles.yml`;
+    if (existsSync(path)) {
+      return await readYamlFile(path);
+    }
+    return undefined;
   }
 
   public async addProfileSource(source: string) {
@@ -159,7 +183,12 @@ export class ProfileManager {
   }
   private async _syncProfileSource(source: string) {
     if (await this.hasProfileSource(source)) {
-      await exec(`gh repo sync ${source}`);
+      const basePath = await this.basePath;
+      const cwd = `${basePath}/${source}`;
+      await exec(`git add . > /dev/null 2>&1`, { cwd });
+      await exec(`git commit -m "sync" > /dev/null 2>&1`, { cwd });
+      await exec(`git pull > /dev/null`, { cwd });
+      await exec(`git push > /dev/null 2>&1 `, { cwd });
     }
   }
 
@@ -200,23 +229,13 @@ export class ProfileManager {
     const basePath = await this.basePath;
 
     await mkdir(`${basePath}/${source}`, { recursive: true });
-    await exec(`cd ${basePath}/${parts[0]} && gh repo create ${source} --clone --private --template cpdevtools/dcm-profiles-template`);
-    await this._createProfile(source);
-
-    /*
-        const github = await GithubSession.instance;
-        await github.api!.repos.createUsingTemplate({
-            owner: parts[0],
-            name: parts[1],
-            template_owner: 'cpdevtools',
-            template_repo: 'dcm-profiles-template'
-        });
-        console.log(`Cloning ${source} into ${basePath}/${source}...`);
-        await exec(`gh repo clone ${source} ${basePath}/${source}`);
-        */
+    await exec(`gh repo create ${source} --clone --private --template cpdevtools/dcm-profiles-template`, {
+      cwd: `${basePath}/${parts[0]}`,
+    });
+    await this.createProfile(source);
   }
 
-  private async _createProfile(source: string, profileName?: string, profileDescription?: string) {
+  public async createProfile(source: string, profileName?: string, profileDescription?: string) {
     const prompt = (await importInquirer()).prompt;
     if (!profileName) {
       const { name } = await prompt([
@@ -250,6 +269,7 @@ export class ProfileManager {
     profileConfig.name = profileName!;
     profileConfig.description = profileDescription;
     await writeYamlFile(`${profilePath}/profile.yml`, profileConfig);
+    await this._syncProfileSource(source);
   }
 
   private async _path2ProfilSourceId(profilePath: string): Promise<string | undefined> {
@@ -318,27 +338,22 @@ export class ProfileManager {
           await unlink(PROFILE_DIR);
         }
         await symlink(profilePath, PROFILE_DIR, "dir");
+        await this._syncProfileSource(source);
       }
     }
   }
 
-  private async _initialize() {
-    // await this._loadProfilesConfig();
-    const ttt = await this._readProfile();
+  public get activeConfig() {
+    return this._activeProfilePromise!;
   }
 
-  // private async _loadProfilesConfig() {
-  //     const configPath = `${await this.basePath}/${PROFILES_CONFIG_FILE}`;
-  //     if (existsSync(configPath)) {
-  //         this._profilesConfig = await readYamlFile(configPath);
-  //     } else {
-  //         await this._saveProfilesConfig();
-  //     }
-
-  // }
-
-  // public async _saveProfilesConfig() {
-  //     const configPath = `${await this.basePath}/${PROFILES_CONFIG_FILE}`;
-  //     await writeYamlFile(configPath, this._profilesConfig);
-  // }
+  private async _initialize() {
+    const activeProfileId = await this.activeProfileId;
+    if (activeProfileId) {
+      await this._syncProfileSource(activeProfileId.split("#")[0]);
+      this._activeProfilePromise = this._readProfile();
+    } else {
+      this._activeProfilePromise = Promise.resolve(undefined);
+    }
+  }
 }

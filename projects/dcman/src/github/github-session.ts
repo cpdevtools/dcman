@@ -76,7 +76,14 @@ export class GithubSession {
 
   public get authStatus(): Promise<GithubAuthStatus | undefined> {
     if (!this._authStatusPromise) {
-      this._authStatusPromise = githubAuthStatus(this._env());
+      this._authStatusPromise = new Promise<GithubAuthStatus | undefined>(async (resolve, reject) => {
+        try {
+          const authStatus = await githubAuthStatus(this._env());
+          resolve(authStatus);
+        } catch {
+          resolve(undefined);
+        }
+      });
     }
     return this._authStatusPromise;
   }

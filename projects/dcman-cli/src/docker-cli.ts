@@ -1,8 +1,8 @@
 import {
-  openDevcontainer,
-  startDevContainerSyncWatcher,
+  //  openDevcontainer,
+  // startDevContainerSyncWatcher,
   startWorkspaceWatcher,
-  syncDevContainer,
+  //  syncDevContainer,
   syncGitReposInWorkSpaces,
 } from "@cpdevtools/dcman";
 import yargs from "yargs";
@@ -26,7 +26,7 @@ export default yargs(hideBin(process.argv))
         async (yargs) => {
           await syncGitReposInWorkSpaces();
           await startWorkspaceWatcher();
-          await startDevContainerSyncWatcher();
+          //  await startDevContainerSyncWatcher();
         }
       )
       .command(
@@ -83,7 +83,7 @@ export default yargs(hideBin(process.argv))
         },
         async (yargs) => {
           // await startInfrastructure();
-          await syncDevContainer();
+          //     await syncDevContainer();
         }
       );
   });

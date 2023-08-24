@@ -1,13 +1,13 @@
 import {
+  DevContainerManager,
   GithubSession,
   ProfileManager,
   //ensureGithubLogin,
   initializeCli,
-  openDevcontainer,
+  //openDevcontainer,
   printAsYaml,
-  startInfrastructure,
-  syncDevContainer,
-  watchAndSyncDevContainer,
+  //syncDevContainer,
+  //watchAndSyncDevContainer,
   watchAndSyncWorkspaces,
 } from "@cpdevtools/dcman";
 
@@ -24,17 +24,7 @@ export default yargs(hideBin(process.argv))
     },
     async (yargs) => {
       await initializeCli();
-      await GithubSession.exitIfNotLoggedIn();
-      //await pm.addProfileSource("myrddraall/dcm-profiles")
-      //const a = (await ProfileManager.instance).setActiveProfile("myrddraall/dcm-profiles", "default");
-      //await GithubSession.setup();
-      const pm = await ProfileManager.instance;
-      printAsYaml(
-        {
-          "Active Profile": await pm.activeProfile,
-        },
-        { cliColor: true }
-      );
+      await (await DevContainerManager.instance).resetDevContainer("cpdevtools/devcontainer-devcontainers");
     }
   )
   .command(
@@ -206,19 +196,85 @@ export default yargs(hideBin(process.argv))
   )
 
   .command(
-    "open <container>",
+    "open <container> [<workspaceOrFolder>]",
+    "description goes here",
+    (yargs) => {
+      return yargs
+        .positional("container", {
+          describe: "Github repo url or owner/repo",
+          type: "string",
+          demandOption: true,
+        })
+        .positional("workspaceOrFolder", {
+          describe: "the workspace or folder to open inside the dev container",
+          type: "string",
+        });
+    },
+    async (yargs) => {
+      const dcm = await DevContainerManager.instance;
+      await dcm.openDevContainer(yargs.container, yargs.workspaceOrFolder);
+    }
+  )
+  .command(
+    "add <container>",
     "description goes here",
     (yargs) => {
       return yargs.positional("container", {
         describe: "Github repo url or owner/repo",
         type: "string",
+        demandOption: true,
       });
     },
     async (yargs) => {
-      await openDevcontainer(yargs.container);
+      const dcm = await DevContainerManager.instance;
+      await dcm.addDevContainer(yargs.container);
     }
   )
-
+  .command(
+    "remove <container>",
+    "description goes here",
+    (yargs) => {
+      return yargs.positional("container", {
+        describe: "Github repo url or owner/repo",
+        type: "string",
+        demandOption: true,
+      });
+    },
+    async (yargs) => {
+      const dcm = await DevContainerManager.instance;
+      await dcm.removeDevContainer(yargs.container);
+    }
+  )
+  .command(
+    "reset <container>",
+    "description goes here",
+    (yargs) => {
+      return yargs.positional("container", {
+        describe: "Github repo url or owner/repo",
+        type: "string",
+        demandOption: true,
+      });
+    },
+    async (yargs) => {
+      await initializeCli();
+      await (await DevContainerManager.instance).resetDevContainer(yargs.container);
+    }
+  )
+  .command(
+    "list",
+    "description goes here",
+    (yargs) => yargs.option("all", { alias: "a", type: "boolean", description: "List all dev containers" }),
+    async (yargs) => {
+      const dcm = await DevContainerManager.instance;
+      const containers = await (yargs.all ? dcm.listAllDevContainers() : dcm.listProfileDevContainers());
+      printAsYaml(
+        {
+          "Dev containers": containers.length > 0 ? containers : "None",
+        },
+        { cliColor: true }
+      );
+    }
+  )
   .command(
     "dc-workspaces watch",
     "watch workspaces",
@@ -236,7 +292,7 @@ export default yargs(hideBin(process.argv))
       return yargs;
     },
     async (yargs) => {
-      await watchAndSyncDevContainer();
+      // await watchAndSyncDevContainer();
     }
   )
   .command("dc-event", "event callbacks", (yargs) => {
@@ -252,8 +308,8 @@ export default yargs(hideBin(process.argv))
       },
       async (yargs) => {
         // await ensureGithubLogin();
-        await syncDevContainer(true);
-        await startInfrastructure();
+        //   await syncDevContainer(true);
+        //    await startInfrastructure();
       }
     );
   });

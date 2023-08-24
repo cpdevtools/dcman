@@ -1,15 +1,12 @@
 import { exec, importInquirer, readYamlFile, writeYamlFile } from "@cpdevtools/lib-node-utilities";
 import { existsSync } from "fs";
-import { DCM_CONFIG_DIR } from "../constants";
+import { DCM_CONFIG_DIR, DCM_PROFILES_DIR, DCM_PROFILE_DIR } from "../constants";
 import { GithubSession } from "../github";
 
 import { glob } from "fast-glob";
 import { cp, mkdir, realpath, rm, symlink, unlink } from "fs/promises";
 import { dirname } from "path";
 import { cwd } from "process";
-
-const PROFILES_DIR = `${DCM_CONFIG_DIR}/profiles`;
-const PROFILE_DIR = `${DCM_CONFIG_DIR}/profile`;
 
 export interface ProfileSourceItem {
   owner: string;
@@ -66,11 +63,11 @@ export class ProfileManager {
 
   private constructor() {}
 
-  private get basePath() {
+  public get basePath() {
     return (async () => {
       const inst = await GithubSession.instance;
       const authStatus = await inst.authStatus;
-      return `${PROFILES_DIR}/${authStatus?.username}`;
+      return `${DCM_PROFILES_DIR}/${authStatus?.username}`;
     })();
   }
 
@@ -145,7 +142,7 @@ export class ProfileManager {
   private async _readProfile(id?: string): Promise<Profile | undefined> {
     const basePath = await this.basePath;
     const parts = id?.split("#");
-    const path = !id ? `${PROFILE_DIR}/profile.yml` : `${basePath}/${parts![0]}/profiles/${parts![1]}/profile.yml`;
+    const path = !id ? `${DCM_PROFILE_DIR}/profile.yml` : `${basePath}/${parts![0]}/profiles/${parts![1]}/profile.yml`;
     if (existsSync(path)) {
       return await readYamlFile(path);
     }
@@ -181,12 +178,12 @@ export class ProfileManager {
       throw new Error(`Profile source ${source} does not exist.`);
     }
   }
-  private async _syncProfileSource(source: string) {
+  private async _syncProfileSource(source: string, msg: string = "sync") {
     if (await this.hasProfileSource(source)) {
       const basePath = await this.basePath;
       const cwd = `${basePath}/${source}`;
       await exec(`git add . > /dev/null 2>&1`, { cwd });
-      await exec(`git commit -m "sync" > /dev/null 2>&1`, { cwd });
+      await exec(`git commit -m "${msg}" > /dev/null 2>&1`, { cwd });
       await exec(`git pull > /dev/null`, { cwd });
       await exec(`git push > /dev/null 2>&1 `, { cwd });
     }
@@ -290,8 +287,8 @@ export class ProfileManager {
 
   public get activeProfileId() {
     return (async () => {
-      if (existsSync(PROFILE_DIR)) {
-        return await this._path2ProfileId(await realpath(PROFILE_DIR));
+      if (existsSync(DCM_PROFILE_DIR)) {
+        return await this._path2ProfileId(await realpath(DCM_PROFILE_DIR));
       }
       return undefined;
     })();
@@ -299,7 +296,7 @@ export class ProfileManager {
 
   public get activeProfile() {
     return (async () => {
-      if (existsSync(PROFILE_DIR)) {
+      if (existsSync(DCM_PROFILE_DIR)) {
         return {
           id: await this.activeProfileId,
           ...(await this._readProfile()),
@@ -313,8 +310,8 @@ export class ProfileManager {
   public async setActiveProfile(source: string, profile: string): Promise<void>;
   public async setActiveProfile(source: string | null, profile?: string) {
     if (source === null) {
-      if (existsSync(PROFILE_DIR)) {
-        await unlink(PROFILE_DIR);
+      if (existsSync(DCM_PROFILE_DIR)) {
+        await unlink(DCM_PROFILE_DIR);
       }
       return;
     }
@@ -334,10 +331,10 @@ export class ProfileManager {
       }
       const profilePath = `${await this.basePath}/${source}/profiles/${profile}`;
       if (existsSync(profilePath)) {
-        if (existsSync(PROFILE_DIR)) {
-          await unlink(PROFILE_DIR);
+        if (existsSync(DCM_PROFILE_DIR)) {
+          await unlink(DCM_PROFILE_DIR);
         }
-        await symlink(profilePath, PROFILE_DIR, "dir");
+        await symlink(profilePath, DCM_PROFILE_DIR, "dir");
         await this._syncProfileSource(source);
       }
     }
@@ -345,6 +342,14 @@ export class ProfileManager {
 
   public get activeConfig() {
     return this._activeProfilePromise!;
+  }
+
+  public async sync(msg?: string, profileId?: string) {
+    profileId ??= await this.activeProfileId;
+    if (profileId) {
+      const parts = profileId.split("#");
+      await this._syncProfileSource(parts[0], msg);
+    }
   }
 
   private async _initialize() {

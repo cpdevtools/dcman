@@ -209,7 +209,8 @@ export class GithubSession {
         {
           type: "confirm",
           name: "confirm",
-          message: "You are already logged in. Do you want to log out and log in again?",
+          message: `You are already logged in as '${status.username}'. Do you want to log out and in again?`,
+          default: false,
         },
       ]);
       if (!confirm) {
@@ -221,6 +222,7 @@ export class GithubSession {
     while (!status) {
       const success = await this._login();
       if (success) {
+        console.info(chalk.green("Login successful"));
         status = await this.authStatus;
       }
     }
@@ -258,6 +260,7 @@ export class GithubSession {
       ]);
       opts.method = am;
     }
+    this._authStatusPromise = undefined;
     const status = await this.authStatus;
     if (status) {
       await this.logout();
@@ -282,6 +285,7 @@ export class GithubSession {
     } else {
       success = !(await exec(`gh auth login -h github.com -p https -s ${SCOPES.join(",")} -w`, { env: this._env() }));
     }
+    this._authStatusPromise = undefined;
     return success;
   }
 }

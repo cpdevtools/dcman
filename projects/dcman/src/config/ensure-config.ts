@@ -14,7 +14,6 @@ export async function getHostConfigDir() {
 }
 
 export async function ensureHostConfig() {
-  console.log("ensureHostConfig");
   await ensureHostConfigDir();
   const config = await loadConfig();
   await promptHostConfig(config);

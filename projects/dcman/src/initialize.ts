@@ -25,44 +25,9 @@ export async function initializeCli() {
   if (!existsSync(DCM_PROFILES_DIR)) {
     await mkdir(DCM_PROFILES_DIR, { recursive: true });
   }
-
-  // const ghStatus = await _loadGhStatusFile();
-  // console.log(ghStatus);
-
-  // const userData = await _loadUserDataFile();
-  // console.log(userData);
   await initializeGithubSession();
 }
 
 async function initializeGithubSession() {
   const session = await GithubSession.instance;
-  //  console.log(session);
 }
-
-// async function _loadUserDataFile() {
-//     const f = new CachedFile(userDataFile);
-//     if (!f.isExpired()) {
-//         return f.read();
-//     }
-//     return undefined;
-// }
-
-// async function _loadGhStatusFile(): Promise<GithubUserStatus | undefined> {
-//     const file = new CachedFile(ghStatusFile);
-//     console.log(file);
-//     console.log(await file.isExpired());
-//     if (!await file.isExpired()) {
-//         return await file.read();
-//     }
-//     const authData = await githubAuthStatus();
-//     if (authData) {
-//         let data = {
-//             ...authData,
-//             token: undefined
-//         };
-//         delete data.token;
-//         await file.write(data);
-//         return data;
-//     }
-//     return undefined;
-// }

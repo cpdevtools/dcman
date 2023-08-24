@@ -140,10 +140,7 @@ export class GithubSession {
       if (response.headers["github-authentication-token-expiration"]) {
         const exp = parseJSON(response.headers["github-authentication-token-expiration"] as string);
         if (isValid(exp)) {
-          // console.log(exp);
           const diff = differenceInHours(exp, new Date());
-          // console.log(diff);
-          // console.log(formatDistanceToNow(exp));
           if (diff < 720) {
             console.warn(`Token is about to expire in ${formatDistanceToNow(exp)}. run 'dcm login' to refresh token`);
           }

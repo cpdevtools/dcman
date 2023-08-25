@@ -1,7 +1,7 @@
 import glob from "fast-glob";
 import { writeFile } from "fs/promises";
 
-console.log("Applying versions...");
+console.info("Applying versions...");
 
 const mainPkg = require("../package.json");
 const mainVersion = mainPkg.version;
@@ -11,7 +11,6 @@ function replaceVersion(depSection: { [key: string]: string } | undefined, versi
     for (const key in depSection) {
       const value = depSection[key];
       if (value === "0.0.0-PLACEHOLDER") {
-        console.log(`  ${key}: ${value} -> ${version}`);
         depSection[key] = version;
       }
     }

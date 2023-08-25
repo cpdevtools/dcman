@@ -23,17 +23,22 @@
     "set-version:npm": "pnpm version --allow-same-version --commit-hooks=false --git-tag-version=false"
   },
   "dependencies": {
-    "@cpdevtools/lib-node-utilities": "^0.4.52",
+    "@cpdevtools/lib-node-utilities": "^0.4.53",
     "@octokit/rest": "^19.0.13",
     "chokidar": "^3.5.3",
+    "date-fns": "^2.30.0",
     "docker-cli-js": "^2.10.0",
     "dockerode": "^3.3.5",
+    "inquirer": "^9.2.10",
+    "is-wsl": "^2.2.0",
     "node-docker-api": "^1.1.22",
     "semver": "7.3.8",
     "simple-git": "^3.19.1"
   },
   "devDependencies": {
+    "@octokit/types": "^11.1.0",
     "@types/dockerode": "^3.3.18",
+    "@types/inquirer": "^9.0.3",
     "@types/node": "^20.2.5",
     "@types/semver": "7.3.13",
     "copyfiles": "^2.4.1",

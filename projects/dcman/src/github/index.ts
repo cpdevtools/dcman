@@ -1,2 +1,2 @@
-export * from "./github-login";
-export * from "./github-user";
+export * from "./github-types";
+export * from "./github-session";

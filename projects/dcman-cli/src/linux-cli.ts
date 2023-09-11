@@ -261,6 +261,27 @@ export default yargs(hideBin(process.argv))
     }
   )
   .command(
+    "create <container> <template>",
+    "description goes here",
+    (yargs) => {
+      return yargs
+        .positional("container", {
+          describe: "owner/repo",
+          type: "string",
+          demandOption: true,
+        })
+        .positional("template", {
+          describe: "owner/repo",
+          type: "string",
+          demandOption: true,
+        });
+    },
+    async (yargs) => {
+      await initializeCli();
+      await (await DevContainerManager.instance).createDevContainer(yargs.template, yargs.container);
+    }
+  )
+  .command(
     "list",
     "description goes here",
     (yargs) => yargs.option("all", { alias: "a", type: "boolean", description: "List all dev containers" }),

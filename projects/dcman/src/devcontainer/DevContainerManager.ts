@@ -2,18 +2,25 @@ import { exec, importInquirer, readJsonFile, readYamlFile, translateWslPath, wri
 import { spawn } from "child_process";
 import { glob } from "fast-glob";
 import { existsSync } from "fs";
-import { rm, rmdir } from "fs/promises";
+import { mkdir, rename, rm, rmdir } from "fs/promises";
 import isWsl from "is-wsl";
 import { dirname, extname } from "path";
 import { DCM_CONTAINER_REPOS_DIR, DCM_PROFILE_DIR } from "../constants";
 import { GithubSession } from "../github";
 import { ProfileManager } from "../profiles";
-import { DevContainerGHRepoKey } from "./DevContainerGHRepoKey";
-import { DevContainerGHRepo } from "./DevContainerGHRepo";
 import { DevContainerConfig } from "./DevContainerConfig";
+import { DevContainerGHRepo } from "./DevContainerGHRepo";
+import { DevContainerGHRepoKey } from "./DevContainerGHRepoKey";
 
 const PROFILE_DEV_CONTAINER_LIST_FILENAME = `devcontainers.yml`;
 const PROFILE_DEV_CONTAINER_LIST_PATH = `${DCM_PROFILE_DIR}/${PROFILE_DEV_CONTAINER_LIST_FILENAME}`;
+
+export interface DevContainerCreationOptions {
+  templateOwner: string;
+  templateRepo: string;
+  owner: string;
+  repo: string;
+}
 
 export class DevContainerManager {
   private static _instancePromise: Promise<DevContainerManager>;
@@ -102,7 +109,7 @@ export class DevContainerManager {
     return config ?? {};
   }
 
-  private async loadDevContainerGHRepo(devContainerId: string): Promise<DevContainerGHRepo> {
+  private async _loadDevContainerGHRepo(devContainerId: string): Promise<DevContainerGHRepo> {
     const key = this.parseDevContainerGHRepoKey(devContainerId);
 
     const requests = [
@@ -131,7 +138,7 @@ export class DevContainerManager {
   }
 
   public async addDevContainer(devContainerId: string) {
-    const info = await this.loadDevContainerGHRepo(devContainerId);
+    const info = await this._loadDevContainerGHRepo(devContainerId);
     devContainerId = `${info.owner}/${info.repo}#${info.branchOrTag}`;
     const hasDevContainer = await this.hasDevContainer(devContainerId);
     const hasActiveDevContainer = await this.hasActiveDevContainer(devContainerId);
@@ -141,14 +148,19 @@ export class DevContainerManager {
     } else if (!hasDevContainer) {
       await this._downloadDevContainer(devContainerId);
     }
+    await this._addDevContainerToProfile(devContainerId);
+  }
 
+  private async _addDevContainerToProfile(devContainerId: string) {
     const devcontainers = await this._loadProfileDevContainerList();
-    devcontainers.push(devContainerId);
-    await this._saveProfileDevContainerList(devcontainers);
+    if (!devcontainers.includes(devContainerId)) {
+      devcontainers.push(devContainerId);
+      await this._saveProfileDevContainerList(devcontainers);
+    }
   }
 
   public async removeDevContainer(devContainerId: string) {
-    const info = await this.loadDevContainerGHRepo(devContainerId);
+    const info = await this._loadDevContainerGHRepo(devContainerId);
     devContainerId = `${info.owner}/${info.repo}#${info.branchOrTag}`;
     if (await this.hasActiveDevContainer(devContainerId)) {
       const devcontainers = await this._loadProfileDevContainerList();
@@ -188,7 +200,7 @@ export class DevContainerManager {
   }
 
   private async _downloadDevContainer(devContainerId: string) {
-    const info = await this.loadDevContainerGHRepo(devContainerId);
+    const info = await this._loadDevContainerGHRepo(devContainerId);
     await exec(
       `gh repo clone ${info.owner}/${info.repo} ${DCM_CONTAINER_REPOS_DIR}/${info.owner}/${info.repo}/${encodeURIComponent(
         info.branchOrTag ?? "main"
@@ -234,11 +246,15 @@ export class DevContainerManager {
 
   private async _generateDevContainerLaunchUrl(devContainerId: string, workspaceOrFolder?: string) {
     const key = this.parseDevContainerGHRepoKey(devContainerId);
+
     let containerPath = `${DCM_CONTAINER_REPOS_DIR}/${key.owner}/${key.repo}/${encodeURIComponent(key.branchOrTag ?? "main")}`;
     containerPath = isWsl ? await translateWslPath(containerPath) : containerPath;
     const hexPath = Buffer.from(containerPath).toString("hex");
     let uri = `vscode-remote://dev-container+${hexPath}/`;
     if (workspaceOrFolder) {
+      if (workspaceOrFolder.startsWith("/")) {
+        workspaceOrFolder = workspaceOrFolder.substring(1);
+      }
       uri += workspaceOrFolder;
     }
     return uri;
@@ -254,6 +270,7 @@ export class DevContainerManager {
 
   private async _launchDevContainer(devContainerId: string, workspaceOrFolder?: string) {
     const cmd = await this._generateDevContainerLaunchCommand(devContainerId, workspaceOrFolder);
+    console.log(cmd);
     spawn(cmd, { shell: true, detached: true, stdio: "ignore" });
   }
 
@@ -261,11 +278,11 @@ export class DevContainerManager {
     const prompt = (await importInquirer()).prompt;
     const info = this.parseDevContainerGHRepoKey(devContainerId);
     if (!info.branchOrTag) {
-      info.branchOrTag = (await this.loadDevContainerGHRepo(devContainerId)).defaultBranch;
+      info.branchOrTag = (await this._loadDevContainerGHRepo(devContainerId)).defaultBranch;
     }
     devContainerId = `${info.owner}/${info.repo}#${info.branchOrTag}`;
     if (!(await this.hasActiveDevContainer(devContainerId))) {
-      const info = await this.loadDevContainerGHRepo(devContainerId);
+      const info = await this._loadDevContainerGHRepo(devContainerId);
       const existsOnGithub =
         info.branches.findIndex((b) => b.name === info.branchOrTag) > -1 || info.tags.findIndex((t) => t.name === info.branchOrTag) > -1;
       if (!existsOnGithub) {
@@ -289,8 +306,8 @@ export class DevContainerManager {
     workspace = (workspace ?? "").trim();
     const isWS = extname(workspace) === ".code-workspace";
     const containsSlash = workspace.includes("/");
-    const config = await this._loadDevContainerConfig(devContainerId);
 
+    const config = await this._loadDevContainerConfig(devContainerId);
     const workspacesFolder = config.codeWorkspacesFolder?.trim() || config.workspaceFolder?.trim() || "";
 
     if (!workspace) {
@@ -310,7 +327,7 @@ export class DevContainerManager {
   }
 
   public async resetDevContainer(devContainerId: string) {
-    const info = await this.loadDevContainerGHRepo(devContainerId);
+    const info = await this._loadDevContainerGHRepo(devContainerId);
     devContainerId = `${info.owner}/${info.repo}#${info.branchOrTag}`;
     const hasActiveDevContainer = await this.hasActiveDevContainer(devContainerId);
 
@@ -323,7 +340,36 @@ export class DevContainerManager {
     });
   }
 
-  public async createDevContainer() {
-    throw new Error("Not yet implemented");
+  public async createDevContainer(template: string, target: string) {
+    const templateParts = template.split("/");
+    const targetParts = target.split("/");
+    const templateOwner = templateParts[0];
+    const templateRepo = templateParts[1];
+    const owner = targetParts[0];
+    const repo = targetParts[1];
+
+    const repoPath = `${DCM_CONTAINER_REPOS_DIR}/${owner}/${repo}/main`;
+
+    await this._createDevContainerRepo({
+      templateOwner,
+      templateRepo,
+      owner,
+      repo,
+    });
+
+    await exec(`pnpm install`, { cwd: repoPath });
+    await this.openDevContainer(`${owner}/${repo}#main`);
+  }
+
+  private async _createDevContainerRepo(options: DevContainerCreationOptions) {
+    const repoPath = `${DCM_CONTAINER_REPOS_DIR}/${options.owner}/${options.repo}`;
+    await mkdir(repoPath, { recursive: true });
+    await exec(
+      `gh repo create ${options.owner}/${options.repo} --private --clone --template ${options.templateOwner}/${options.templateRepo}`,
+      { cwd: repoPath }
+    );
+
+    await rename(`${repoPath}/${options.repo}`, `${repoPath}/main`);
+    await this._addDevContainerToProfile(`${options.owner}/${options.repo}#main`);
   }
 }

@@ -34,39 +34,39 @@ export async function syncGitReposInWorkSpace(workspaceFile: string) {
     console.info("Synchronizing Workspace:", workspaceFile);
     console.group();
 
-    for (const proj of workspace.folders) {
-      if (proj.path.startsWith("../projects/")) {
-        const projectPath = join(WORKSPACES_DIR, proj.path);
-        console.info("Synchronizing Project:", projectPath);
+    for (const repo of workspace.folders) {
+      if (repo.path.startsWith("../repos/")) {
+        const repoPath = join(WORKSPACES_DIR, repo.path);
+        console.info("Synchronizing Repositories:", repoPath);
         console.group();
-        let projectPathExists = existsSync(projectPath) && (await readdir(projectPath)).length !== 0;
-        let repoUri = proj.repository;
+        let repoPathExists = existsSync(repoPath) && (await readdir(repoPath)).length !== 0;
+        let repoUri = repo.repository;
 
-        if (!projectPathExists && repoUri) {
-          console.info("Cloning", repoUri, "to", projectPath);
-          await mkdir(projectPath, { recursive: true });
+        if (!repoPathExists && repoUri) {
+          console.info("Cloning", repoUri, "to", repoPath);
+          await mkdir(repoPath, { recursive: true });
           const git = simpleGit();
-          await git.clone(repoUri, projectPath);
+          await git.clone(repoUri, repoPath);
           console.info(repoUri, "cloned.");
-          await runPmInstall(projectPath);
-        } else if (projectPathExists && !repoUri) {
-          const git = simpleGit(projectPath);
+          await runPmInstall(repoPath);
+        } else if (repoPathExists && !repoUri) {
+          const git = simpleGit(repoPath);
           if (await git.checkIsRepo()) {
             const remote = (await git.getRemotes(true)).find((r) => r.name === "origin");
             if (remote) {
-              proj.repository = repoUri = remote.refs.fetch;
+              repo.repository = repoUri = remote.refs.fetch;
               workspaceChanged = true;
             }
           }
-        } else if (projectPathExists && repoUri) {
+        } else if (repoPathExists && repoUri) {
           // make sure the origin repo matches workspace file, origin wins
-          const git = simpleGit(projectPath);
+          const git = simpleGit(repoPath);
           if (await git.checkIsRepo()) {
             const remote = (await git.getRemotes(true)).find((r) => r.name === "origin");
             if (remote) {
               if (repoUri !== remote.refs.fetch) {
                 console.info(`Updating ${repoUri} to ${remote.refs.fetch} in workspace ${workspaceFile}`);
-                proj.repository = repoUri = remote.refs.fetch;
+                repo.repository = repoUri = remote.refs.fetch;
                 workspaceChanged = true;
               }
             } else {
@@ -75,7 +75,7 @@ export async function syncGitReposInWorkSpace(workspaceFile: string) {
             }
           }
         } else {
-          console.warn(`${projectPath} is a not git repo. Expected repo of ${repoUri}`);
+          console.warn(`${repoPath} is a not git repo. Expected repo of ${repoUri}`);
         }
         console.groupEnd();
       }

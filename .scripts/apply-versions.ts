@@ -18,7 +18,7 @@ function replaceVersion(depSection: { [key: string]: string } | undefined, versi
 }
 
 (async () => {
-  const files = await glob("projects/*/package.json");
+  const files = await glob("repos/*/package.json");
   for (const file of files) {
     const pkg = require(`../${file}`);
     replaceVersion(pkg.dependencies, mainVersion);

@@ -46,9 +46,8 @@ export default yargs(hideBin(process.argv))
           });
         },
         async (yargs) => {
-          await syncDevContainer();
           await syncGitReposInWorkSpaces();
-          await Promise.all([startWatchAndSyncDevContainer(), startWorkspaceWatcher()]);
+          await syncDevContainer();
         }
       )
       .command(
@@ -90,7 +89,8 @@ export default yargs(hideBin(process.argv))
           });
         },
         async (yargs) => {
-          // await startInfrastructure();
+          await startWorkspaceWatcher();
+          await startWatchAndSyncDevContainer();
         }
       )
       .command(

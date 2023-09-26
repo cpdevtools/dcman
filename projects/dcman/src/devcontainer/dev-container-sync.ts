@@ -1,7 +1,6 @@
 import { exec, start } from "@cpdevtools/lib-node-utilities";
 import { watch } from "chokidar";
 import { DEVCONTAINER_DIR } from "../constants";
-import { DevContainerManager } from "./DevContainerManager";
 
 export async function syncDevContainer(msg: string = "dcm sync") {
   console.log("Syncing dev container");

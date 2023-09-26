@@ -12,7 +12,7 @@ export async function syncDevContainer(msg: string = "dcm sync") {
 }
 
 export async function watchAndSyncDevContainer(msg: string = "dcm sync") {
-  watch(["*.code-workspace"], { cwd: DEVCONTAINER_DIR, ignoreInitial: true }).on("all", (e, p, s) => {
+  watch(["**/*", "!repos"], { cwd: DEVCONTAINER_DIR, ignoreInitial: true }).on("all", (e, p, s) => {
     syncDevContainer(msg);
   });
 }

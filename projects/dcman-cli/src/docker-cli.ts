@@ -46,8 +46,8 @@ export default yargs(hideBin(process.argv))
           });
         },
         async (yargs) => {
-          await syncGitReposInWorkSpaces();
           await syncDevContainer();
+          await syncGitReposInWorkSpaces();
         }
       )
       .command(
@@ -104,8 +104,7 @@ export default yargs(hideBin(process.argv))
           });
         },
         async (yargs) => {
-          // await startInfrastructure();
-          //     await syncDevContainer();
+          await syncDevContainer();
         }
       );
   });

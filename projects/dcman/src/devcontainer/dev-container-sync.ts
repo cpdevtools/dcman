@@ -1,6 +1,7 @@
 import { exec, start } from "@cpdevtools/lib-node-utilities";
 import { watch } from "chokidar";
 import { DEVCONTAINER_DIR } from "../constants";
+import { rm } from "fs/promises";
 
 export async function syncDevContainer(msg: string = "dcm sync") {
   console.log("Syncing dev container");
@@ -27,5 +28,6 @@ export async function watchAndSyncDevContainer(msg: string = "dcm sync") {
 }
 
 export async function startWatchAndSyncDevContainer() {
-  await start(`dcm sync-service container > dcsync.log`);
+  await rm("devcontainer-sync.log", { force: true });
+  await start(`dcm sync-service container > devcontainer-sync.log`);
 }

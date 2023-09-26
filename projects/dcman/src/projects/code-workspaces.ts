@@ -1,7 +1,7 @@
 import { PackageManager, readJsonFile, start, writeJsonFile } from "@cpdevtools/lib-node-utilities";
 import { watch } from "chokidar";
 import { existsSync } from "fs";
-import { mkdir, readdir } from "fs/promises";
+import { mkdir, readdir, rm } from "fs/promises";
 import { extname, join } from "path";
 import simpleGit from "simple-git";
 import { WORKSPACES_DIR } from "../constants/paths";
@@ -119,5 +119,6 @@ export async function watchAndSyncWorkspaces() {
 }
 
 export async function startWorkspaceWatcher() {
-  await start(`dcm sync-service workspaces > wssync.log`);
+  await rm("workspace-sync.log", { force: true });
+  await start(`dcm sync-service workspaces > workspace-sync.log`);
 }

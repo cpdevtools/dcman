@@ -1,10 +1,10 @@
 import { PackageManager, readJsonFile, start, writeJsonFile } from "@cpdevtools/lib-node-utilities";
 import { watch } from "chokidar";
-import { WORKSPACES_DIR } from "../constants/paths";
 import { existsSync } from "fs";
 import { mkdir, readdir } from "fs/promises";
 import { extname, join } from "path";
 import simpleGit from "simple-git";
+import { WORKSPACES_DIR } from "../constants/paths";
 
 export interface CodeWorkspace {
   folders: {
@@ -108,9 +108,13 @@ export async function syncGitReposInWorkSpaces() {
 }
 
 export async function watchAndSyncWorkspaces() {
-  watch(["*.code-workspace"], { cwd: WORKSPACES_DIR, ignoreInitial: true }).on("all", (e, p, s) => {
-    console.log("Workspace changed", p);
-    syncGitReposInWorkSpace(p);
+  watch(["*.code-workspace"], { cwd: WORKSPACES_DIR, ignoreInitial: true }).on("all", async (e, p, s) => {
+    try {
+      console.log("Workspace changed", p);
+      await syncGitReposInWorkSpace(p);
+    } catch (e) {
+      console.error(e);
+    }
   });
 }
 

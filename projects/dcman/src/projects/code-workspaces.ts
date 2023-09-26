@@ -114,5 +114,5 @@ export async function watchAndSyncWorkspaces() {
 }
 
 export async function startWorkspaceWatcher() {
-  await start("dcm dc-workspaces watch");
+  await start("dcm sync-service workspaces");
 }

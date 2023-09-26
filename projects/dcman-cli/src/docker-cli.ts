@@ -7,19 +7,28 @@ import {
   //  syncDevContainer,
   syncGitReposInWorkSpaces,
   watchAndSyncWorkspaces,
+  watchAndSyncDevContainer,
 } from "@cpdevtools/dcman";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 
 export default yargs(hideBin(process.argv))
   .scriptName("dcm")
-  .command("dc-workspaces", "dev container workspaces", (yargs) => {
+  .command("sync-service", "watch and sync", (yargs) => {
     return yargs.command(
-      "watch",
-      "watch workspaces",
+      "workspaces",
+      "watch and sync workspaces",
       (yargs) => {},
       async (yargs) => {
         await watchAndSyncWorkspaces();
+      }
+    );
+    return yargs.command(
+      "container",
+      "watch and sync container",
+      (yargs) => {},
+      async (yargs) => {
+        await watchAndSyncDevContainer();
       }
     );
   })
@@ -36,7 +45,6 @@ export default yargs(hideBin(process.argv))
           });
         },
         async (yargs) => {
-          console.log("asdfg...");
           await syncDevContainer();
           await syncGitReposInWorkSpaces();
           await Promise.all([startWatchAndSyncDevContainer(), startWorkspaceWatcher()]);

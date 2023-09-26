@@ -12,13 +12,18 @@ export async function syncDevContainer(msg: string = "dcm sync") {
 }
 
 export async function watchAndSyncDevContainer(msg: string = "dcm sync") {
-  watch(["**/*", "!repos", "!.git/**", "!.pnpm-store/**", "!node_modules/**"], { cwd: DEVCONTAINER_DIR, ignoreInitial: true }).on(
-    "all",
-    (e, p, s) => {
+  watch(["**/*", "!repos/**", "!.git/**", "!.pnpm-store/**", "!node_modules/**"], {
+    cwd: DEVCONTAINER_DIR,
+    ignoreInitial: true,
+    awaitWriteFinish: { stabilityThreshold: 250 },
+  }).on("all", async (e, p, s) => {
+    try {
       console.log("Dev Container changed", p);
-      syncDevContainer(msg);
+      await syncDevContainer(msg);
+    } catch (e) {
+      console.error(e);
     }
-  );
+  });
 }
 
 export async function startWatchAndSyncDevContainer() {

@@ -27,5 +27,5 @@ export async function watchAndSyncDevContainer(msg: string = "dcm sync") {
 }
 
 export async function startWatchAndSyncDevContainer() {
-  await start(`nohup "dcm sync-service container" > dcsync.log &`);
+  await start(`nohup "dcm sync-service container" > dcsync.log >2&1`);
 }

@@ -15,22 +15,23 @@ import { hideBin } from "yargs/helpers";
 export default yargs(hideBin(process.argv))
   .scriptName("dcm")
   .command("sync-service", "watch and sync", (yargs) => {
-    return yargs.command(
-      "workspaces",
-      "watch and sync workspaces",
-      (yargs) => {},
-      async (yargs) => {
-        await watchAndSyncWorkspaces();
-      }
-    );
-    return yargs.command(
-      "container",
-      "watch and sync container",
-      (yargs) => {},
-      async (yargs) => {
-        await watchAndSyncDevContainer();
-      }
-    );
+    return yargs
+      .command(
+        "workspaces",
+        "watch and sync workspaces",
+        (yargs) => {},
+        async (yargs) => {
+          await watchAndSyncWorkspaces();
+        }
+      )
+      .command(
+        "container",
+        "watch and sync container",
+        (yargs) => {},
+        async (yargs) => {
+          await watchAndSyncDevContainer();
+        }
+      );
   })
   .command("dc-event", "event callbacks", (yargs) => {
     return yargs

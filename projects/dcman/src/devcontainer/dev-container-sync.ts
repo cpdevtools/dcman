@@ -5,10 +5,10 @@ import { DEVCONTAINER_DIR } from "../constants";
 export async function syncDevContainer(msg: string = "dcm sync") {
   console.log("Syncing dev container");
   const cwd = DEVCONTAINER_DIR;
-  await exec(`git add . > /dev/null 2>&1`, { cwd });
-  await exec(`git commit -m "${msg}" > /dev/null 2>&1`, { cwd });
-  await exec(`git pull > /dev/null`, { cwd });
-  await exec(`git push > /dev/null 2>&1 `, { cwd });
+  await exec(`git add .`, { cwd });
+  await exec(`git commit -m "${msg}"`, { cwd });
+  await exec(`git pull`, { cwd });
+  await exec(`git push`, { cwd });
 }
 
 export async function watchAndSyncDevContainer(msg: string = "dcm sync") {

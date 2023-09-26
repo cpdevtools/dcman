@@ -4,6 +4,7 @@ import { DEVCONTAINER_DIR } from "../constants";
 import { DevContainerManager } from "./DevContainerManager";
 
 export async function syncDevContainer(msg: string = "dcm sync") {
+  console.log("Syncing dev container");
   const cwd = DEVCONTAINER_DIR;
   await exec(`git add . > /dev/null 2>&1`, { cwd });
   await exec(`git commit -m "${msg}" > /dev/null 2>&1`, { cwd });
@@ -18,5 +19,5 @@ export async function watchAndSyncDevContainer(msg: string = "dcm sync") {
 }
 
 export async function startWatchAndSyncDevContainer() {
-  await start("dcm dc-workspaces watch");
+  await start("dcm sync-service container");
 }

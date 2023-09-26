@@ -109,6 +109,7 @@ export async function syncGitReposInWorkSpaces() {
 
 export async function watchAndSyncWorkspaces() {
   watch(["*.code-workspace"], { cwd: WORKSPACES_DIR, ignoreInitial: true }).on("all", (e, p, s) => {
+    console.log("Workspace changed", p);
     syncGitReposInWorkSpace(p);
   });
 }

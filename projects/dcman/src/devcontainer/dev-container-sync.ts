@@ -13,6 +13,7 @@ export async function syncDevContainer(msg: string = "dcm sync") {
 
 export async function watchAndSyncDevContainer(msg: string = "dcm sync") {
   watch(["**/*", "!repos"], { cwd: DEVCONTAINER_DIR, ignoreInitial: true }).on("all", (e, p, s) => {
+    console.log("Dev Container changed", p);
     syncDevContainer(msg);
   });
 }

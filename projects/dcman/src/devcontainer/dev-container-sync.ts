@@ -12,7 +12,7 @@ export async function syncDevContainer(msg: string = "dcm sync") {
 }
 
 export async function watchAndSyncDevContainer(msg: string = "dcm sync") {
-  watch(["**/*", "!repos/**", "!.git/**", "!.pnpm-store/**", "!node_modules/**"], {
+  watch(["**/*", "!repos/**", "!.git/**", "!.pnpm-store/**", "!node_modules/**", "!*.log"], {
     cwd: DEVCONTAINER_DIR,
     ignoreInitial: true,
     awaitWriteFinish: { stabilityThreshold: 250 },

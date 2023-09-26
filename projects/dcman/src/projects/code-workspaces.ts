@@ -119,5 +119,5 @@ export async function watchAndSyncWorkspaces() {
 }
 
 export async function startWorkspaceWatcher() {
-  await start("dcm sync-service workspaces");
+  await start(`nohup "dcm sync-service workspaces"> wssync.log &`);
 }

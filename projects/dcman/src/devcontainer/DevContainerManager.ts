@@ -11,6 +11,7 @@ import { ProfileManager } from "../profiles";
 import { DevContainerConfig } from "./DevContainerConfig";
 import { DevContainerGHRepo } from "./DevContainerGHRepo";
 import { DevContainerGHRepoKey } from "./DevContainerGHRepoKey";
+import { parseDevContainerGHRepoKey } from "./dev-container-util";
 
 const PROFILE_DEV_CONTAINER_LIST_FILENAME = `devcontainers.yml`;
 const PROFILE_DEV_CONTAINER_LIST_PATH = `${DCM_PROFILE_DIR}/${PROFILE_DEV_CONTAINER_LIST_FILENAME}`;
@@ -86,22 +87,8 @@ export class DevContainerManager {
     await this._profileManager.sync("Updated devcontainer list");
   }
 
-  private parseDevContainerGHRepoKey(devContainerId: string): DevContainerGHRepoKey {
-    let parts = devContainerId.split("#");
-    const commitish = parts.length > 1 ? parts[1] : undefined;
-    parts = parts[0].split("/");
-    const repo = parts.pop()!;
-    const owner = parts.pop()!;
-
-    return {
-      owner,
-      repo,
-      branchOrTag: commitish,
-    };
-  }
-
   private async _loadDevContainerConfig(devContainerId: string): Promise<DevContainerConfig> {
-    const key = this.parseDevContainerGHRepoKey(devContainerId);
+    const key = parseDevContainerGHRepoKey(devContainerId);
     const configPath = `${DCM_CONTAINER_REPOS_DIR}/${key.owner}/${key.repo}/${encodeURIComponent(
       key.branchOrTag ?? "main"
     )}/.devcontainer/devcontainer.json`;
@@ -110,7 +97,7 @@ export class DevContainerManager {
   }
 
   private async _loadDevContainerGHRepo(devContainerId: string): Promise<DevContainerGHRepo> {
-    const key = this.parseDevContainerGHRepoKey(devContainerId);
+    const key = parseDevContainerGHRepoKey(devContainerId);
 
     const requests = [
       this._githubApi.repos.listBranches({
@@ -210,7 +197,7 @@ export class DevContainerManager {
 
   private async _comitDevContainer(devContainerId: string, msg: string = "sync") {
     if (await this.hasDevContainer(devContainerId)) {
-      const key = this.parseDevContainerGHRepoKey(devContainerId);
+      const key = parseDevContainerGHRepoKey(devContainerId);
       const cwd = `${DCM_CONTAINER_REPOS_DIR}/${key.owner}/${key.repo}/${encodeURIComponent(key.branchOrTag ?? "main")}`;
 
       await exec(`git add . > /dev/null 2>&1`, { cwd });
@@ -220,7 +207,7 @@ export class DevContainerManager {
 
   private async _syncDevContainer(devContainerId: string, msg?: string) {
     if (await this.hasDevContainer(devContainerId)) {
-      const key = this.parseDevContainerGHRepoKey(devContainerId);
+      const key = parseDevContainerGHRepoKey(devContainerId);
       const cwd = `${DCM_CONTAINER_REPOS_DIR}/${key.owner}/${key.repo}/${encodeURIComponent(key.branchOrTag ?? "main")}`;
 
       await this._comitDevContainer(devContainerId, msg);
@@ -230,7 +217,7 @@ export class DevContainerManager {
   }
 
   public async hasDevContainer(devContainerId: string) {
-    const info = this.parseDevContainerGHRepoKey(devContainerId);
+    const info = parseDevContainerGHRepoKey(devContainerId);
     return existsSync(`${DCM_CONTAINER_REPOS_DIR}/${info.owner}/${info.repo}/${encodeURIComponent(info.branchOrTag ?? "main")}`);
   }
 
@@ -245,7 +232,7 @@ export class DevContainerManager {
   }
 
   private async _generateDevContainerLaunchUrl(devContainerId: string, workspaceOrFolder?: string) {
-    const key = this.parseDevContainerGHRepoKey(devContainerId);
+    const key = parseDevContainerGHRepoKey(devContainerId);
 
     let containerPath = `${DCM_CONTAINER_REPOS_DIR}/${key.owner}/${key.repo}/${encodeURIComponent(key.branchOrTag ?? "main")}`;
     containerPath = isWsl ? await translateWslPath(containerPath) : containerPath;
@@ -276,7 +263,7 @@ export class DevContainerManager {
 
   public async openDevContainer(devContainerId: string, workspace?: string) {
     const prompt = (await importInquirer()).prompt;
-    const info = this.parseDevContainerGHRepoKey(devContainerId);
+    const info = parseDevContainerGHRepoKey(devContainerId);
     if (!info.branchOrTag) {
       info.branchOrTag = (await this._loadDevContainerGHRepo(devContainerId)).defaultBranch;
     }
@@ -299,7 +286,7 @@ export class DevContainerManager {
         console.info(`Dev container '${devContainerId}' has not been downloaded. Aborting.`);
         return;
       }
-      await this._downloadDevContainer(devContainerId);
+      await this.addDevContainer(devContainerId);
     }
     await this._syncDevContainer(devContainerId);
 

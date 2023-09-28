@@ -318,8 +318,8 @@ export default yargs(hideBin(process.argv))
   //     // await watchAndSyncDevContainer();
   //   }
   // )
-  .command("dc-event", "event callbacks", (yargs) => {
-    return yargs.command(
+  .command("dc", "event callbacks", (yargs) => {
+    return yargs.hide("dc").command(
       "initialize <devContainer>",
       "On Dev Container Initialize",
       (yargs) => {

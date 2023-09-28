@@ -320,15 +320,9 @@ export default yargs(hideBin(process.argv))
   // )
   .command("dc", "event callbacks", (yargs) => {
     return yargs.hide("dc").command(
-      "initialize <devContainer>",
+      "initialize",
       "On Dev Container Initialize",
-      (yargs) => {
-        return yargs.positional("devContainer", {
-          describe: "dev container id",
-          demandOption: true,
-          type: "string",
-        });
-      },
+      (yargs) => {},
       async (yargs) => {
         await initializeCli();
         await startInfrastructure();

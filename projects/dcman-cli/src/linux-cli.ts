@@ -9,6 +9,8 @@ import {
   //syncDevContainer,
   //watchAndSyncDevContainer,
   watchAndSyncWorkspaces,
+  startInfrastructure,
+  writeGHTokenToEnvFile,
 } from "@cpdevtools/dcman";
 
 import yargs from "yargs";
@@ -328,9 +330,9 @@ export default yargs(hideBin(process.argv))
         });
       },
       async (yargs) => {
-        // await ensureGithubLogin();
-        //   await syncDevContainer(true);
-        //    await startInfrastructure();
+        await initializeCli();
+        await startInfrastructure();
+        await writeGHTokenToEnvFile(process.cwd());
       }
     );
   });

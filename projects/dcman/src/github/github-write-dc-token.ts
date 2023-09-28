@@ -1,11 +1,8 @@
-import { parseDevContainerGHRepoKey } from "../devcontainer/dev-container-util";
-import { GithubSession } from "./github-session";
 import { writeFile } from "fs/promises";
+import { getDevcontainerPath } from "../devcontainer/dev-container-util";
+import { GithubSession } from "./github-session";
 
 export async function writeGHTokenToDC(dcId: string) {
-  const info = parseDevContainerGHRepoKey(dcId);
-
   const session = await GithubSession.instance;
-
-  session.token;
+  await writeFile(`${getDevcontainerPath(dcId)}/.github.token.env`, `GITHUB_TOKEN=${session.token}`, { encoding: "utf-8" });
 }

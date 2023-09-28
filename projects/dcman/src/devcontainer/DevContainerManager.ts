@@ -11,7 +11,7 @@ import { ProfileManager } from "../profiles";
 import { DevContainerConfig } from "./DevContainerConfig";
 import { DevContainerGHRepo } from "./DevContainerGHRepo";
 import { DevContainerGHRepoKey } from "./DevContainerGHRepoKey";
-import { parseDevContainerGHRepoKey } from "./dev-container-util";
+import { getDevcontainerPath, parseDevContainerGHRepoKey } from "./dev-container-util";
 
 const PROFILE_DEV_CONTAINER_LIST_FILENAME = `devcontainers.yml`;
 const PROFILE_DEV_CONTAINER_LIST_PATH = `${DCM_PROFILE_DIR}/${PROFILE_DEV_CONTAINER_LIST_FILENAME}`;
@@ -88,10 +88,7 @@ export class DevContainerManager {
   }
 
   private async _loadDevContainerConfig(devContainerId: string): Promise<DevContainerConfig> {
-    const key = parseDevContainerGHRepoKey(devContainerId);
-    const configPath = `${DCM_CONTAINER_REPOS_DIR}/${key.owner}/${key.repo}/${encodeURIComponent(
-      key.branchOrTag ?? "main"
-    )}/.devcontainer/devcontainer.json`;
+    const configPath = `${getDevcontainerPath(devContainerId)}/.devcontainer/devcontainer.json`;
     const config = await readJsonFile<DevContainerConfig>(configPath);
     return config ?? {};
   }
@@ -197,8 +194,7 @@ export class DevContainerManager {
 
   private async _comitDevContainer(devContainerId: string, msg: string = "sync") {
     if (await this.hasDevContainer(devContainerId)) {
-      const key = parseDevContainerGHRepoKey(devContainerId);
-      const cwd = `${DCM_CONTAINER_REPOS_DIR}/${key.owner}/${key.repo}/${encodeURIComponent(key.branchOrTag ?? "main")}`;
+      const cwd = getDevcontainerPath(devContainerId);
 
       await exec(`git add . > /dev/null 2>&1`, { cwd });
       await exec(`git commit -m "${msg}" > /dev/null 2>&1`, { cwd });
@@ -207,8 +203,7 @@ export class DevContainerManager {
 
   private async _syncDevContainer(devContainerId: string, msg?: string) {
     if (await this.hasDevContainer(devContainerId)) {
-      const key = parseDevContainerGHRepoKey(devContainerId);
-      const cwd = `${DCM_CONTAINER_REPOS_DIR}/${key.owner}/${key.repo}/${encodeURIComponent(key.branchOrTag ?? "main")}`;
+      const cwd = getDevcontainerPath(devContainerId);
 
       await this._comitDevContainer(devContainerId, msg);
       await exec(`git pull > /dev/null`, { cwd });
@@ -232,9 +227,7 @@ export class DevContainerManager {
   }
 
   private async _generateDevContainerLaunchUrl(devContainerId: string, workspaceOrFolder?: string) {
-    const key = parseDevContainerGHRepoKey(devContainerId);
-
-    let containerPath = `${DCM_CONTAINER_REPOS_DIR}/${key.owner}/${key.repo}/${encodeURIComponent(key.branchOrTag ?? "main")}`;
+    let containerPath = getDevcontainerPath(devContainerId);
     containerPath = isWsl ? await translateWslPath(containerPath) : containerPath;
     const hexPath = Buffer.from(containerPath).toString("hex");
     let uri = `vscode-remote://dev-container+${hexPath}/`;

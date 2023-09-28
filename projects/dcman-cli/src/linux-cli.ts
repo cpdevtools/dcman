@@ -10,7 +10,7 @@ import {
   //watchAndSyncDevContainer,
   watchAndSyncWorkspaces,
   startInfrastructure,
-  writeGHTokenToDC,
+  writeGHTokenToEnvFile,
 } from "@cpdevtools/dcman";
 
 import yargs from "yargs";
@@ -332,7 +332,7 @@ export default yargs(hideBin(process.argv))
       async (yargs) => {
         await initializeCli();
         await startInfrastructure();
-        await writeGHTokenToDC(yargs.devContainer);
+        await writeGHTokenToEnvFile(process.cwd());
       }
     );
   });

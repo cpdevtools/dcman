@@ -1,4 +1,12 @@
-import { exec, importInquirer, readJsonFile, readYamlFile, translateWslPath, writeYamlFile } from "@cpdevtools/lib-node-utilities";
+import {
+  exec,
+  importInquirer,
+  readJsonFile,
+  readYamlFile,
+  translateWslPath,
+  writeJsonFile,
+  writeYamlFile,
+} from "@cpdevtools/lib-node-utilities";
 import { spawn } from "child_process";
 import { glob } from "fast-glob";
 import { existsSync } from "fs";
@@ -337,7 +345,15 @@ export class DevContainerManager {
       repo,
     });
 
+    const pkg = (await readJsonFile(`${repoPath}/package.json`)) as any;
+
+    pkg.name = `@${owner}/${repo}`;
+
+    await writeJsonFile(`${repoPath}/package.json`, pkg);
+
     await exec(`pnpm install`, { cwd: repoPath });
+
+    this._syncDevContainer(`${owner}/${repo}#main`, "initial commit");
     await this.openDevContainer(`${owner}/${repo}#main`);
   }
 

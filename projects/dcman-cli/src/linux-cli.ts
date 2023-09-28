@@ -298,26 +298,26 @@ export default yargs(hideBin(process.argv))
       );
     }
   )
-  .command(
-    "dc-workspaces watch",
-    "watch workspaces",
-    (yargs) => {
-      return yargs;
-    },
-    async (yargs) => {
-      await watchAndSyncWorkspaces();
-    }
-  )
-  .command(
-    "dc-devcontainer watch",
-    "watch devcontainer",
-    (yargs) => {
-      return yargs;
-    },
-    async (yargs) => {
-      // await watchAndSyncDevContainer();
-    }
-  )
+  // .command(
+  //   "dc-workspaces watch",
+  //   "watch workspaces",
+  //   (yargs) => {
+  //     return yargs;
+  //   },
+  //   async (yargs) => {
+  //     await watchAndSyncWorkspaces();
+  //   }
+  // )
+  // .command(
+  //   "dc-devcontainer watch",
+  //   "watch devcontainer",
+  //   (yargs) => {
+  //     return yargs;
+  //   },
+  //   async (yargs) => {
+  //     // await watchAndSyncDevContainer();
+  //   }
+  // )
   .command("dc-event", "event callbacks", (yargs) => {
     return yargs.command(
       "initialize <devContainer>",

@@ -2,17 +2,13 @@ import {
   DevContainerManager,
   GithubSession,
   ProfileManager,
-  //ensureGithubLogin,
   initializeCli,
-  //openDevcontainer,
   printAsYaml,
-  //syncDevContainer,
-  //watchAndSyncDevContainer,
-  watchAndSyncWorkspaces,
   startInfrastructure,
   writeGHTokenToEnvFile,
 } from "@cpdevtools/dcman";
-import { installDCMCli } from "install-cli";
+
+import { installDCMCli } from "./install-cli";
 
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";

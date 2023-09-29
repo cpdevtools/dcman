@@ -119,6 +119,6 @@ export async function watchAndSyncWorkspaces() {
 }
 
 export async function startWorkspaceWatcher() {
-  await rm("workspace-sync.log", { force: true });
-  await start(`dcm sync-service workspaces > workspace-sync.log`);
+  await rm(`${DEVCONTAINER_DIR}/workspace-sync.log`, { force: true });
+  await start(`dcm sync-service workspaces > ${DEVCONTAINER_DIR}/workspace-sync.log`);
 }

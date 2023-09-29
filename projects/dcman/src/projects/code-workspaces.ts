@@ -4,7 +4,7 @@ import { existsSync } from "fs";
 import { mkdir, readdir, rm } from "fs/promises";
 import { extname, join } from "path";
 import simpleGit from "simple-git";
-import { WORKSPACES_DIR } from "../constants/paths";
+import { WORKSPACES_DIR, DEVCONTAINER_DIR } from "../constants/paths";
 
 export interface CodeWorkspace {
   folders: {
@@ -119,6 +119,6 @@ export async function watchAndSyncWorkspaces() {
 }
 
 export async function startWorkspaceWatcher() {
-  await rm("workspace-sync.log", { force: true });
-  await start(`dcm sync-service workspaces > workspace-sync.log`);
+  await rm(`${DEVCONTAINER_DIR}/workspace-sync.log`, { force: true });
+  await start(`dcm sync-service workspaces > ${DEVCONTAINER_DIR}/workspace-sync.log`);
 }

@@ -28,6 +28,6 @@ export async function watchAndSyncDevContainer(msg: string = "dcm sync") {
 }
 
 export async function startWatchAndSyncDevContainer() {
-  await rm("devcontainer-sync.log", { force: true });
-  await start(`dcm sync-service container > devcontainer-sync.log`);
+  await rm(`${DEVCONTAINER_DIR}/devcontainer-sync.log`, { force: true });
+  await start(`dcm sync-service container >  ${DEVCONTAINER_DIR}/devcontainer-sync.log`);
 }

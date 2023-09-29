@@ -12,6 +12,7 @@ import {
   startInfrastructure,
   writeGHTokenToEnvFile,
 } from "@cpdevtools/dcman";
+import { installDCMCli } from "install-cli";
 
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
@@ -19,14 +20,15 @@ import { hideBin } from "yargs/helpers";
 export default yargs(hideBin(process.argv))
   .scriptName("dcm")
   .command(
-    "test",
-    "test",
+    "install",
+    "installs dcm locally",
     (yargs) => {
       return yargs;
     },
     async (yargs) => {
+      await installDCMCli();
       await initializeCli();
-      await (await DevContainerManager.instance).resetDevContainer("cpdevtools/devcontainer-devcontainers");
+      await GithubSession.login();
     }
   )
   .command(
@@ -319,14 +321,16 @@ export default yargs(hideBin(process.argv))
   //   }
   // )
   .command("dc", "event callbacks", (yargs) => {
-    return yargs.hide("dc").command(
-      "initialize",
-      "On Dev Container Initialize",
-      (yargs) => {},
-      async (yargs) => {
-        await initializeCli();
-        await startInfrastructure();
-        await writeGHTokenToEnvFile(process.cwd());
-      }
-    );
+    return yargs
+      .command(
+        "initialize",
+        "On Dev Container Initialize",
+        (yargs) => {},
+        async (yargs) => {
+          await initializeCli();
+          await startInfrastructure();
+          await writeGHTokenToEnvFile(process.cwd());
+        }
+      )
+      .hide("initialize");
   });

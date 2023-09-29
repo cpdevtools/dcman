@@ -12,6 +12,7 @@ import {
   startInfrastructure,
   writeGHTokenToEnvFile,
 } from "@cpdevtools/dcman";
+import { installDCMCli } from "install-cli";
 
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
@@ -24,7 +25,11 @@ export default yargs(hideBin(process.argv))
     (yargs) => {
       return yargs;
     },
-    async (yargs) => {}
+    async (yargs) => {
+      await installDCMCli();
+      await initializeCli();
+      await GithubSession.login();
+    }
   )
   .command(
     "login",

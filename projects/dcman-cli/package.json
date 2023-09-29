@@ -29,6 +29,7 @@
   },
   "dependencies": {
     "@cpdevtools/dcman": "0.0.0-PLACEHOLDER",
+    "@cpdevtools/lib-node-utilities": "^0.4.53",
     "is-docker": "^2.2.1",
     "is-windows": "^1.0.2",
     "is-wsl": "^2.2.0",

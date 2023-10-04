@@ -1,4 +1,5 @@
 import {
+  GithubSession,
   startWatchAndSyncDevContainer,
   //  openDevcontainer,
   // startDevContainerSyncWatcher,
@@ -6,8 +7,8 @@ import {
   syncDevContainer,
   //  syncDevContainer,
   syncGitReposInWorkSpaces,
-  watchAndSyncWorkspaces,
   watchAndSyncDevContainer,
+  watchAndSyncWorkspaces,
 } from "@cpdevtools/dcman";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
@@ -46,6 +47,8 @@ export default yargs(hideBin(process.argv))
           });
         },
         async (yargs) => {
+          const github = await GithubSession.instance;
+          await github.applyGitSettings();
           await syncDevContainer();
           await syncGitReposInWorkSpaces();
         }

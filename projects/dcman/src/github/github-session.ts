@@ -5,6 +5,7 @@ import { differenceInHours, formatDistanceToNow, isValid, parseJSON } from "date
 import { mkdir, rm } from "fs/promises";
 import { CachedFile } from "../cache";
 import { DCM_CACHE_DIR } from "../constants";
+import { User, UserEmails } from "./github-types";
 
 export type GithubAuthStatus = Omit<GhAuthStatus, "token">;
 
@@ -104,6 +105,21 @@ export class GithubSession {
     return env;
   }
 
+  public async getUser(): Promise<User | undefined> {
+    const response = await this._api?.users.getAuthenticated();
+    if (response?.status === 200) {
+      return response?.data as User;
+    }
+    return undefined;
+  }
+  public async getUserEmails(): Promise<UserEmails | undefined> {
+    const response = await this._api?.users.listPublicEmailsForAuthenticatedUser();
+    if (response?.status === 200) {
+      return response?.data as UserEmails;
+    }
+    return undefined;
+  }
+
   private _initializeOctokit(token: string) {
     this.__token = token;
     this._api = new Octokit({
@@ -195,6 +211,25 @@ export class GithubSession {
     this._responseCache = {};
     await rm(DCM_CACHE_DIR, { recursive: true, force: true });
     await mkdir(DCM_CACHE_DIR, { recursive: true });
+  }
+
+  public async applyGitSettings(): Promise<void> {
+    const status = await this.authStatus;
+    if (!status) {
+      return;
+    }
+    const [user, emails] = await Promise.all([this.getUser(), this.getUserEmails()]);
+    if (!user || !emails) {
+      return;
+    }
+
+    const email = user.email || emails.find((e) => e.primary)?.email;
+
+    console.log("------------------------");
+    console.log(email);
+
+    await exec(`git config --global user.email "${email}"`, { env: this._env() });
+    await exec(`git config --global user.name "${user.name}"`, { env: this._env() });
   }
 
   public async login(opts?: LoginOptions): Promise<void> {

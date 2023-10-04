@@ -47,6 +47,7 @@ export default yargs(hideBin(process.argv))
           });
         },
         async (yargs) => {
+          console.log("onCreate");
           const github = await GithubSession.instance;
           await github.applyGitSettings();
           await syncDevContainer();

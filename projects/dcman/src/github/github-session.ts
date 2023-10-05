@@ -5,6 +5,7 @@ import { differenceInHours, formatDistanceToNow, isValid, parseJSON } from "date
 import { mkdir, rm } from "fs/promises";
 import { CachedFile } from "../cache";
 import { DCM_CACHE_DIR } from "../constants";
+import isDocker from "is-docker";
 import { User, UserEmails } from "./github-types";
 
 export type GithubAuthStatus = Omit<GhAuthStatus, "token">;
@@ -100,8 +101,10 @@ export class GithubSession {
 
   private _env() {
     const env = { ...process.env };
-    delete env.GITHUB_TOKEN;
-    delete env.GH_TOKEN;
+    if (!isDocker()) {
+      delete env.GITHUB_TOKEN;
+      delete env.GH_TOKEN;
+    }
     return env;
   }
 

@@ -58,6 +58,9 @@ importers:
       inquirer:
         specifier: ^9.2.10
         version: 9.2.10
+      is-docker:
+        specifier: ^2.2.1
+        version: 2.2.1
       is-wsl:
         specifier: ^2.2.0
         version: 2.2.0

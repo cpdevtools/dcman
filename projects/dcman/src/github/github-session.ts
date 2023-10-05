@@ -228,9 +228,6 @@ export class GithubSession {
 
     const email = user.email || emails.find((e) => e.primary)?.email;
 
-    console.log("------------------------");
-    console.log(email);
-
     await exec(`git config --global user.email "${email}"`, { env: this._env() });
     await exec(`git config --global user.name "${user.name}"`, { env: this._env() });
   }

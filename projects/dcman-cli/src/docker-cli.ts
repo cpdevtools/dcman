@@ -38,7 +38,7 @@ export default yargs(hideBin(process.argv))
     return yargs
       .command(
         "onCreate <devContainer>",
-        "On Dev Container Create!!",
+        "On Dev Container Create",
         (yargs) => {
           return yargs.positional("devContainer", {
             describe: "dev container id",
@@ -47,9 +47,7 @@ export default yargs(hideBin(process.argv))
           });
         },
         async (yargs) => {
-          console.log("onCreate");
           const github = await GithubSession.instance;
-          console.log("1");
           await github.applyGitSettings();
           await syncDevContainer();
           await syncGitReposInWorkSpaces();

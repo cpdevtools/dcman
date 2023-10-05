@@ -4,7 +4,7 @@ import { DEVCONTAINER_DIR } from "../constants";
 import { rm } from "fs/promises";
 
 export async function syncDevContainer(msg: string = "dcm sync") {
-  console.log("Syncing dev container");
+  console.info("Syncing dev container");
   const cwd = DEVCONTAINER_DIR;
   await exec(`git add .`, { cwd });
   await exec(`git commit -m "${msg}"`, { cwd });
@@ -19,7 +19,7 @@ export async function watchAndSyncDevContainer(msg: string = "dcm sync") {
     awaitWriteFinish: { stabilityThreshold: 250 },
   }).on("all", async (e, p, s) => {
     try {
-      console.log("Dev Container changed", p);
+      console.info("Dev Container changed", p);
       await syncDevContainer(msg);
     } catch (e) {
       console.error(e);

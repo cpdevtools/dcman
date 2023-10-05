@@ -344,11 +344,24 @@ export class DevContainerManager {
       repo,
     });
 
-    const pkg = (await readJsonFile(`${repoPath}/package.json`)) as any;
-
+    const pkgPath = `${repoPath}/package.json`;
+    const pkg = (await readJsonFile(pkgPath)) as any;
     pkg.name = `@${owner}/${repo}`;
+    await writeJsonFile(pkgPath, pkg, 2);
 
-    await writeJsonFile(`${repoPath}/package.json`, pkg);
+    const dcJsonPath = `${repoPath}/.devcontainer/devcontainer.json`;
+    const dcJson = (await readJsonFile(dcJsonPath)) as any;
+    dcJson.name = `@${owner}/${repo}`;
+    dcJson.service = `${owner}__${repo}`;
+    await writeJsonFile(dcJsonPath, dcJson, 2);
+
+    const dockerYmlPath = `${repoPath}/.devcontainer/docker-compose.yml`;
+    const dockerYml = (await readYamlFile(dockerYmlPath)) as any;
+
+    const service = dockerYml.services.devcontainer;
+    delete dockerYml.services.devcontainer;
+    dockerYml.services[`${owner}__${repo}`] = service;
+    await writeJsonFile(dockerYmlPath, dockerYml, 2);
 
     await exec(`pnpm install`, { cwd: repoPath });
 

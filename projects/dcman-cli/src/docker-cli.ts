@@ -1,11 +1,9 @@
 import {
   GithubSession,
+  initializeCli,
   startWatchAndSyncDevContainer,
-  //  openDevcontainer,
-  // startDevContainerSyncWatcher,
   startWorkspaceWatcher,
   syncDevContainer,
-  //  syncDevContainer,
   syncGitReposInWorkSpaces,
   watchAndSyncDevContainer,
   watchAndSyncWorkspaces,
@@ -22,6 +20,7 @@ export default yargs(hideBin(process.argv))
         "watch and sync workspaces",
         (yargs) => {},
         async (yargs) => {
+          await initializeCli();
           await watchAndSyncWorkspaces();
         }
       )
@@ -30,6 +29,7 @@ export default yargs(hideBin(process.argv))
         "watch and sync container",
         (yargs) => {},
         async (yargs) => {
+          await initializeCli();
           await watchAndSyncDevContainer();
         }
       );
@@ -47,6 +47,7 @@ export default yargs(hideBin(process.argv))
           });
         },
         async (yargs) => {
+          await initializeCli();
           const github = await GithubSession.instance;
           await github.applyGitSettings();
           await syncDevContainer();
@@ -64,6 +65,7 @@ export default yargs(hideBin(process.argv))
           });
         },
         async (yargs) => {
+          await initializeCli();
           // await startInfrastructure();
         }
       )
@@ -78,6 +80,7 @@ export default yargs(hideBin(process.argv))
           });
         },
         async (yargs) => {
+          await initializeCli();
           // await startInfrastructure();
         }
       )
@@ -92,6 +95,7 @@ export default yargs(hideBin(process.argv))
           });
         },
         async (yargs) => {
+          await initializeCli();
           await startWorkspaceWatcher();
           await startWatchAndSyncDevContainer();
         }
@@ -107,6 +111,7 @@ export default yargs(hideBin(process.argv))
           });
         },
         async (yargs) => {
+          await initializeCli();
           await syncDevContainer();
         }
       );

@@ -258,7 +258,6 @@ export class DevContainerManager {
 
   private async _launchDevContainer(devContainerId: string, workspaceOrFolder?: string) {
     const cmd = await this._generateDevContainerLaunchCommand(devContainerId, workspaceOrFolder);
-    console.log(cmd);
     spawn(cmd, { shell: true, detached: true, stdio: "ignore" });
   }
 

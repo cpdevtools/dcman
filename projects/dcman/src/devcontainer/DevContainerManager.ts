@@ -349,13 +349,20 @@ export class DevContainerManager {
     pkg.name = `@${owner}/${repo}`;
     await writeJsonFile(pkgPath, pkg, 2);
 
-    const dcJsonPath = `${repoPath}/.devcontainer/devcontainer.json`;
+    const dcPath = `${repoPath}/.devcontainer`;
+
+    const dcPkgPath = `${dcPath}/package.json`;
+    const dcPkg = (await readJsonFile(dcPkgPath)) as any;
+    dcPkg.name = `@${owner}/${repo}`;
+    await writeJsonFile(dcPkgPath, dcPkg, 2);
+
+    const dcJsonPath = `${dcPath}/devcontainer.json`;
     const dcJson = (await readJsonFile(dcJsonPath)) as any;
     dcJson.name = `@${owner}/${repo}`;
     dcJson.service = `${owner}__${repo}`;
     await writeJsonFile(dcJsonPath, dcJson, 2);
 
-    const dockerYmlPath = `${repoPath}/.devcontainer/docker-compose.yml`;
+    const dockerYmlPath = `${dcPath}/docker-compose.yml`;
     const dockerYml = (await readYamlFile(dockerYmlPath)) as any;
 
     const service = dockerYml.services.devcontainer;

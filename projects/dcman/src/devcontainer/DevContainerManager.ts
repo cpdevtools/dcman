@@ -368,7 +368,7 @@ export class DevContainerManager {
     const service = dockerYml.services.devcontainer;
     delete dockerYml.services.devcontainer;
     dockerYml.services[`${owner}__${repo}`] = service;
-    await writeJsonFile(dockerYmlPath, dockerYml, 2);
+    await writeYamlFile(dockerYmlPath, dockerYml, 2);
 
     await exec(`pnpm install`, { cwd: repoPath });
 

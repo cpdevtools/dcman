@@ -19,7 +19,7 @@ async function getConfig(id: string) {
 export async function startInfrastructure() {
   await initializeDockerSwarm();
   await initializeDevcontainerInfrastructure();
-  await Promise.all([initializeDNSService(), initializeProxyService(), initializeEmailService()]);
+  await Promise.all([initializeProxyService(), initializeEmailService()]);
   //await Promise.all([initializeDNSService(), initializeProxyService(), initializeEmailService()]);
   //await initializeLoggingService();
 }

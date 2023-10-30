@@ -46,7 +46,7 @@ export async function initializeDockerNetworks() {
   if (!swarmNet) {
     await docker.createNetwork({
       Name: "swarm",
-      Driver: "overlay",
+      Driver: "bridge",
     });
   }
 

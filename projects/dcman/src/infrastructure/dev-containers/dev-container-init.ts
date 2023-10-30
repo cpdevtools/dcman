@@ -47,7 +47,6 @@ export async function initializeDockerNetworks() {
     await docker.createNetwork({
       Name: "swarm",
       Driver: "overlay",
-      Ingress: true,
     });
   }
 

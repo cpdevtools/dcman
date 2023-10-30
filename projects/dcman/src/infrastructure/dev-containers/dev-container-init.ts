@@ -47,7 +47,9 @@ export async function initializeDockerNetworks() {
     await docker.createNetwork({
       Name: "swarm",
       Driver: "bridge",
-    });
+      Attachable: true,
+      Scope: "swarm",
+    } as any);
   }
 
   let webNet = await getNetwork("web");

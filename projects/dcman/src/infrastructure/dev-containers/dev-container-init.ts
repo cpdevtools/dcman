@@ -1,5 +1,6 @@
 import Dockerode from "dockerode";
 import { Docker as DockerCli, Options } from "docker-cli-js";
+import { exec } from "@cpdevtools/lib-node-utilities";
 
 export async function initializeDockerCacheVolumes() {
   const docker = new Dockerode();
@@ -44,20 +45,12 @@ export async function initializeDockerNetworks() {
 
   let swarmNet = await getNetwork("swarm");
   if (!swarmNet) {
-    await docker.createNetwork({
-      Name: "swarm",
-      Driver: "bridge",
-      Attachable: true,
-      Scope: "swarm",
-    } as any);
+    await exec(`docker network create --driver=overlay --attachable --scope=swarm swarm`);
   }
 
   let webNet = await getNetwork("web");
   if (!webNet) {
-    await docker.createNetwork({
-      Name: "web",
-      Driver: "bridge",
-    });
+    await exec(`docker network create --driver=bridge --attachable web`);
   }
 }
 

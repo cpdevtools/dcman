@@ -45,6 +45,7 @@ async function getSecret(name: string) {
   try {
     const docker = new Dockerode();
     const secret = docker.getSecret(name);
+
     return await secret.inspect();
   } catch {
     return null;
@@ -54,8 +55,8 @@ async function getSecret(name: string) {
 async function setSecret(name: string, value: string) {
   try {
     const docker = new Dockerode();
-    const secret = docker.getSecret(name);
-    if (secret) {
+    const secret = await getSecret(name);
+    if (secret && secret.CreatedAt) {
       secret.update({
         Data: Buffer.from(value).toString("base64"),
       });

@@ -21,5 +21,5 @@ export async function startInfrastructure() {
   await initializeDevcontainerInfrastructure();
   await Promise.all([initializeProxyService(), initializeEmailService()]);
   //await Promise.all([initializeDNSService(), initializeProxyService(), initializeEmailService()]);
-  //await initializeLoggingService();
+  await initializeLoggingService();
 }

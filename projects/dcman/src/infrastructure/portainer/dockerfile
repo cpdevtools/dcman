@@ -1,0 +1,4 @@
+FROM portainer/agent:2.19.1
+
+SHELL [ "/bin/bash", "-c"]
+RUN htpasswd -nb -B admin "your-password" | cut -d ":" -f 2

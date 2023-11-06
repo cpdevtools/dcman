@@ -1,6 +1,7 @@
 import Dockerode from "dockerode";
 import { Docker as DockerCli, Options } from "docker-cli-js";
 import { exec } from "@cpdevtools/lib-node-utilities";
+import { set } from "date-fns";
 
 export async function initializeDockerCacheVolumes() {
   const docker = new Dockerode();
@@ -40,6 +41,33 @@ async function getNetwork(name: string) {
   }
 }
 
+async function getSecret(name: string) {
+  try {
+    const docker = new Dockerode();
+    const secret = docker.getSecret(name);
+    return await secret.inspect();
+  } catch {
+    return null;
+  }
+}
+
+async function setSecret(name: string, value: string) {
+  try {
+    const docker = new Dockerode();
+    const secret = docker.getSecret(name);
+    if (secret) {
+      secret.update({
+        Data: Buffer.from(value).toString("base64"),
+      });
+    } else {
+      await docker.createSecret({
+        Name: name,
+        Data: Buffer.from(value).toString("base64"),
+      });
+    }
+  } catch {}
+}
+
 export async function initializeDockerNetworks() {
   const docker = new Dockerode();
 
@@ -53,8 +81,12 @@ export async function initializeDockerNetworks() {
     await exec(`docker network create --driver=bridge --attachable web`);
   }
 }
+export async function initializeDockerSecrets() {
+  await setSecret("dcm-admin-password", "admin");
+}
 
 export async function initializeDevcontainerInfrastructure() {
   await initializeDockerCacheVolumes();
   await initializeDockerNetworks();
+  await initializeDockerSecrets();
 }

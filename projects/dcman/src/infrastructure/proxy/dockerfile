@@ -1,8 +1,9 @@
-FROM traefik:v2.10.1
+FROM traefik:v3.0
 
 ARG VERSION=8.8.1
 RUN apk add curl libc6-compat jq
 
+# logging to ELK
 WORKDIR /filebeat
 RUN curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-8.8.1-linux-x86_64.tar.gz
 RUN tar xzvf filebeat-8.8.1-linux-x86_64.tar.gz

@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   proxy:
-    image: traefik:v2.10.1
+    image: dcm-proxy:latest
     command:
       - "--log.level=DEBUG"
       - "--accessLog=true"
@@ -10,19 +10,20 @@ services:
       - "--accessLog.filePath=/var/log/traefik/access.log.json"
       - "--api.insecure=true"
       - "--api.dashboard=true"
+      - "--api.debug=true"
+      - "--api.disabledashboardad=true"
 
-      - "--providers.docker=true"
-      - "--providers.docker.exposedByDefault=true"
-      - "--providers.docker.swarmMode=true"
-      - "--providers.docker.watch=true"
+      - "--providers.swarm=true"
+      - "--providers.swarm.exposedByDefault=false"
+      - "--providers.swarm.watch=true"
+      - "--providers.swarm.refreshSeconds=30"
 
       - "--entryPoints.web.address=:80"
-      - "--entryPoints.webSecure.address=:443"
 
-      - "--certificatesResolvers.letsEncrypt.acme.email=support@conceptual.ca"
-      - "--certificatesResolvers.letsEncrypt.acme.storage=/letsEncrypt/acme.json"
-      - "--certificatesResolvers.letsEncrypt.acme.httpChallenge.entryPoint=web"
-      - "--certificatesResolvers.letsEncrypt.acme.caServer=https://acme-staging-v02.api.letsEncrypt.org/directory"
+      - "--tracing.elastic=true"
+      #- "--tracing.elastic.secrettoken=${}"
+      - "--tracing.elastic.serverurl=elasticsearch:9200"
+      - "--tracing.elastic.serviceenvironment=dev"
 
     ports:
       - target: 80
@@ -32,7 +33,6 @@ services:
         published: 443
         mode: host
       - target: 8080
-        published: 8080
         mode: host
 
     deploy:

@@ -8,11 +8,74 @@ import {
   watchAndSyncDevContainer,
   watchAndSyncWorkspaces,
 } from "@cpdevtools/dcman";
+import { exec, run } from "@cpdevtools/lib-node-utilities";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 
+async function getFirstContainerIdFromDockerService(serviceName: string) {
+  return (
+    await run(`docker inspect --format "{{.Status.ContainerStatus.ContainerID}}" $(docker service ps -q ${serviceName} | head -n1)`)
+  ).trim();
+}
+
 export default yargs(hideBin(process.argv))
   .scriptName("dcm")
+  .parserConfiguration({
+    "unknown-options-as-args": true,
+  })
+  .command(
+    "docker",
+    "watch and sync",
+    (yargs) =>
+      yargs.command(
+        "service",
+        "docker service commands",
+        (yargs) =>
+          yargs
+            .command(
+              "exec <service-name>",
+              "execute code in the first task that matches the service",
+              (yargs) =>
+                yargs
+                  .option("detach", { type: "boolean", alias: "d", description: "Detached mode: run command in the background" })
+                  .option("detach-keys", { type: "string", description: "Override the key sequence for detaching a container" })
+                  .option("env", { type: "array", alias: "e", description: "Set environment variables" })
+                  .option("env-file", { type: "array", description: "Read in a file of environment variables" })
+                  .option("interactive", { type: "boolean", alias: "i", description: "Keep STDIN open even if not attached" })
+                  .option("privileged", { type: "boolean", description: "Give extended privileges to the command" })
+                  .option("tty", { type: "boolean", alias: "t", description: "Allocate a pseudo-TTY" })
+                  .option("user", { type: "string", alias: "u", description: "Username or UID (format: <name|uid>[:<group|gid>])" })
+                  .option("workdir", { type: "string", alias: "w", description: "Working directory inside the container" })
+                  .positional("service-name", { type: "string", demandOption: true, description: "The name of the service" }),
+              async (args) => {
+                const containerId = await getFirstContainerIdFromDockerService(args.serviceName);
+                let cmd = `docker exec`;
+                if (args.detach) cmd += ` -d`;
+                if (args.detachKeys) cmd += ` --detach-keys ${args.detachKeys}`;
+                if (args.env) cmd += ` -e ${args.env.join(" -e ")}`;
+                if (args.envFile) cmd += ` --env-file ${args.envFile.join(" --env-file ")}`;
+                if (args.interactive) cmd += ` -i`;
+                if (args.privileged) cmd += ` --privileged`;
+                if (args.tty) cmd += ` -t`;
+                if (args.user) cmd += ` -u ${args.user}`;
+                if (args.workdir) cmd += ` -w ${args.workdir}`;
+
+                cmd += ` ${containerId} ${args._.slice(3).join(" ")}`;
+
+                await exec(cmd);
+              }
+            )
+            .command(
+              "attach",
+              "docker service commands",
+              (yargs) => {},
+              async (yargs) => {}
+            ),
+        async (yargs) => {}
+      ),
+
+    async (yargs) => {}
+  )
   .command("sync-service", "watch and sync", (yargs) => {
     return yargs
       .command(

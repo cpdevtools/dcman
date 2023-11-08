@@ -1,4 +1,5 @@
 import {
+  DEVCONTAINER_DIR,
   GithubSession,
   initializeCli,
   startWatchAndSyncDevContainer,
@@ -23,6 +24,27 @@ export default yargs(hideBin(process.argv))
   .parserConfiguration({
     "unknown-options-as-args": true,
   })
+  .command(
+    "run <command>",
+    "run a command",
+    (yargs) =>
+      yargs
+        .positional("command", {
+          describe: "command to run",
+          demandOption: true,
+          type: "string",
+        })
+        .option("if-present", { type: "boolean", description: "only run if the command exists" }),
+    async (args) => {
+      const cmdArgs = args._.slice(1).join(" ");
+      let runArgs = "";
+      if (args.ifPresent) {
+        runArgs += ` --if-present`;
+      }
+
+      await exec(`pnpm run ${runArgs} ${args.command} ${cmdArgs}`, { cwd: `${DEVCONTAINER_DIR}/.devcontainer` });
+    }
+  )
   .command(
     "docker",
     "watch and sync",
@@ -61,7 +83,6 @@ export default yargs(hideBin(process.argv))
                 if (args.workdir) cmd += ` -w ${args.workdir}`;
 
                 cmd += ` ${containerId} ${args._.slice(3).join(" ")}`;
-
                 await exec(cmd);
               }
             )

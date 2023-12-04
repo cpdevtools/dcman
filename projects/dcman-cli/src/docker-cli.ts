@@ -2,6 +2,7 @@ import {
   DEVCONTAINER_DIR,
   GithubSession,
   initializeCli,
+  installGhCli,
   startWatchAndSyncDevContainer,
   startWorkspaceWatcher,
   syncDevContainer,
@@ -24,6 +25,14 @@ export default yargs(hideBin(process.argv))
   .parserConfiguration({
     "unknown-options-as-args": true,
   })
+  .command(
+    "test",
+    "test",
+    (yargs) => {},
+    async (yargs) => {
+      await installGhCli();
+    }
+  )
   .command(
     "run <command>",
     "run a command",

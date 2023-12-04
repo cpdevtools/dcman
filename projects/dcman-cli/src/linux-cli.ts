@@ -3,6 +3,8 @@ import {
   GithubSession,
   ProfileManager,
   initializeCli,
+  installGhCli,
+  installXdgUtils,
   printAsYaml,
   startInfrastructure,
   writeGHTokenToEnvFile,
@@ -22,6 +24,8 @@ export default yargs(hideBin(process.argv))
       return yargs;
     },
     async (yargs) => {
+      await installGhCli();
+      await installXdgUtils();
       await installDCMCli();
       await initializeCli();
       await GithubSession.login();

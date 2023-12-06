@@ -126,12 +126,23 @@ export default yargs(hideBin(process.argv))
     (yargs) => {
       return yargs
         .command(
-          "create",
+          "create <source> [<profile>]",
           "create profile",
-          (yargs) => yargs,
+          (yargs) =>
+            yargs
+              .positional("source", {
+                describe: "The source of profiles to create. Must be in the format of 'owner/repo'",
+                type: "string",
+                demandOption: true,
+              })
+              .positional("profile", {
+                describe: "The profile to create. If not provided, will prompt for profile name",
+                type: "string",
+              }),
           async (yargs) => {
             await initializeCli();
             const pm = await ProfileManager.instance;
+            await pm.createProfile(yargs.source, yargs.profile);
           }
         )
         .command(
@@ -141,6 +152,7 @@ export default yargs(hideBin(process.argv))
           async (yargs) => {
             await initializeCli();
             const pm = await ProfileManager.instance;
+            throw new Error("Not implemented");
           }
         );
     },

@@ -19,12 +19,18 @@ nvm install 18
 
 ### Docker
 
-`curl -s https://raw.githubusercontent.com/karaage0703/ubuntu-setup/master/install-docker.sh | /bash`
+```bash
+curl -s https://raw.githubusercontent.com/karaage0703/ubuntu-setup/master/install-docker.sh | /bash
+```
 
 ## Install
 
-`npm i -g @cpdevtools/dcman-cli && dcm install`
+```bash
+npm i -g @cpdevtools/dcman-cli && dcm install
+```
 
 ## Help
 
-`dcm --help`
+```
+bash dcm --help
+```

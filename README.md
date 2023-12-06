@@ -20,7 +20,7 @@ nvm install 18
 ### Docker
 
 ```bash
-curl -s https://raw.githubusercontent.com/karaage0703/ubuntu-setup/master/install-docker.sh | /bash
+curl -s https://raw.githubusercontent.com/karaage0703/ubuntu-setup/master/install-docker.sh | bash
 ```
 
 ## Install

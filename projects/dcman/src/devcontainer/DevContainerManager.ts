@@ -135,7 +135,7 @@ export class DevContainerManager {
     const hasDevContainer = await this.hasDevContainer(devContainerId);
     const hasActiveDevContainer = await this.hasActiveDevContainer(devContainerId);
 
-    if (hasActiveDevContainer) {
+    if (hasActiveDevContainer && hasDevContainer) {
       throw new Error(`Dev container ${devContainerId} already exists`);
     } else if (!hasDevContainer) {
       await this._downloadDevContainer(devContainerId);
@@ -196,7 +196,6 @@ export class DevContainerManager {
     const cmd = `gh repo clone ${info.owner}/${info.repo} ${DCM_CONTAINER_REPOS_DIR}/${info.owner}/${info.repo}/${encodeURIComponent(
       info.branchOrTag ?? "main"
     )} -- --single-branch --branch ${encodeURIComponent(info.branchOrTag ?? "main")}`;
-    console.log(cmd);
     await exec(cmd);
   }
 

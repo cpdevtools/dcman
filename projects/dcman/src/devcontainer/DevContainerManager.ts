@@ -135,7 +135,7 @@ export class DevContainerManager {
     const hasDevContainer = await this.hasDevContainer(devContainerId);
     const hasActiveDevContainer = await this.hasActiveDevContainer(devContainerId);
 
-    if (hasActiveDevContainer) {
+    if (hasActiveDevContainer && hasDevContainer) {
       throw new Error(`Dev container ${devContainerId} already exists`);
     } else if (!hasDevContainer) {
       await this._downloadDevContainer(devContainerId);

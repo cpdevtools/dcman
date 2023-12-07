@@ -196,7 +196,6 @@ export class DevContainerManager {
     const cmd = `gh repo clone ${info.owner}/${info.repo} ${DCM_CONTAINER_REPOS_DIR}/${info.owner}/${info.repo}/${encodeURIComponent(
       info.branchOrTag ?? "main"
     )} -- --single-branch --branch ${encodeURIComponent(info.branchOrTag ?? "main")}`;
-    console.log(cmd);
     await exec(cmd);
   }
 

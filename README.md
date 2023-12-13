@@ -8,8 +8,18 @@ A command line utility to help manage dev containers
 
 - WSL
 - WSL Ubuntu 20+
+- Docker Desktop
 
-### NVM / NodeJs
+### linux
+
+#### Docker
+
+```bash
+curl -s https://raw.githubusercontent.com/karaage0703/ubuntu-setup/master/install-docker.sh | bash
+```
+
+### linux / WSL linux
+#### NVM / NodeJs
 
 ```bash
 curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash
@@ -17,11 +27,7 @@ source ~/.bashrc
 nvm install 18
 ```
 
-### Docker
 
-```bash
-curl -s https://raw.githubusercontent.com/karaage0703/ubuntu-setup/master/install-docker.sh | bash
-```
 
 ## Install
 

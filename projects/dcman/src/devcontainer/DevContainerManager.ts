@@ -180,12 +180,12 @@ export class DevContainerManager {
       const dcPath = `${DCM_CONTAINER_REPOS_DIR}/${dc}`;
 
       await rm(dcPath, { recursive: true, force: true });
-      try {
-        await rmdir(repoPath);
-      } catch {}
-      try {
-        await rmdir(ownerPath);
-      } catch {}
+      // try {
+      //   await rmdir(repoPath);
+      // } catch {}
+      // try {
+      //   await rmdir(ownerPath);
+      // } catch {}
     });
 
     await Promise.all(delProms);

@@ -23,7 +23,7 @@
     "set-version:npm": "pnpm version --allow-same-version --commit-hooks=false --git-tag-version=false"
   },
   "dependencies": {
-    "@cpdevtools/lib-node-utilities": "^0.4.53",
+    "@cpdevtools/lib-node-utilities": "^0.4.59",
     "@octokit/rest": "^19.0.13",
     "chokidar": "^3.5.3",
     "date-fns": "^2.30.0",

@@ -39,7 +39,7 @@ importers:
     dependencies:
       "@cpdevtools/lib-node-utilities":
         specifier: ^0.4.61
-        version: 0.4.61
+        version: 0.4.62
       "@octokit/rest":
         specifier: ^19.0.13
         version: 19.0.13
@@ -108,8 +108,8 @@ importers:
         specifier: 0.0.0-PLACEHOLDER
         version: link:../dcman
       "@cpdevtools/lib-node-utilities":
-        specifier: ^0.4.61
-        version: 0.4.61
+        specifier: ^0.4.62
+        version: 0.4.62
       is-docker:
         specifier: ^2.2.1
         version: 2.2.1
@@ -172,8 +172,8 @@ packages:
     resolution: { integrity: sha512-wMue2Sy4GAVTk6Ic4tJVcnfdau+gx2EnG7S+uAEe+TWJFqE4YoWN4/H8MSLj4eYJKxGg26lZwboEniNiNwZQ6Q== }
     dev: false
 
-  /@cpdevtools/lib-node-utilities@0.4.61:
-    resolution: { integrity: sha512-GMj8mfB/aLNBwIKILxmWdUSJnf2qhOR8db9r0zUApj+mSaQp2Q/EZ8h/tav18J5sAwZXh4OatdILwn+e6jGYSQ== }
+  /@cpdevtools/lib-node-utilities@0.4.62:
+    resolution: { integrity: sha512-moozPCCgjzDcsdwzqAlxC4XchdZolDpGIpDbLoDK1wZCQbGPg8fEu0xmib2X3MxCtTUOWMddcZvY6hVP9f1VdA== }
     engines: { node: ">=14.16" }
     dependencies:
       "@inquirer/core": 2.3.0
@@ -676,7 +676,7 @@ packages:
   /axios@0.27.2:
     resolution: { integrity: sha512-t+yRIyySRTp/wua5xEr+z1q60QmLq8ABsS5O9Me1AsE5dfKqgnCFzwiCZZ/cGNd1lq4/7akDWMxdhVlucjmnOQ== }
     dependencies:
-      follow-redirects: 1.15.2
+      follow-redirects: 1.15.3
       form-data: 4.0.0
     transitivePeerDependencies:
       - debug
@@ -1199,8 +1199,8 @@ packages:
     dependencies:
       to-regex-range: 5.0.1
 
-  /follow-redirects@1.15.2:
-    resolution: { integrity: sha512-VQLG33o04KaQ8uYi2tVNbdrWp1QWxNNea+nmIB4EVM28v0hmP17z7aG1+wAkNzVq4KeXTq3221ye5qTJP91JwA== }
+  /follow-redirects@1.15.3:
+    resolution: { integrity: sha512-1VzOtuEM8pC9SFU1E+8KfTjZyMztRsgEfwQl44z8A25uy13jSzTj6dyK2Df52iV0vgHCfBwLhDWevLn95w5v6Q== }
     engines: { node: ">=4.0" }
     peerDependencies:
       debug: "*"

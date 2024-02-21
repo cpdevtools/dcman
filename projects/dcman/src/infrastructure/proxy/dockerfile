@@ -13,7 +13,7 @@ FROM traefik:v3.0
 
 # RUN ./filebeat modules enable traefik
 
-COPY config ./
+#COPY config ./
 # RUN chmod +x entrypoint.sh
 # RUN chmod +x filebeat-start.sh
 

@@ -8,7 +8,7 @@ export async function initializeProxyService() {
   const stream = await docker.buildImage(
     {
       context: cwd,
-      src: ["dockerfile", "config/filebeat.yml", "config/entrypoint.sh", "config/filebeat-start.sh", "config/modules.d/traefik.yml"],
+      src: ["dockerfile"],
     },
     {
       t: "dcm-proxy",

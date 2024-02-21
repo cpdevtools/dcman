@@ -53,10 +53,15 @@ export class ProfileManager {
 
   public static async exitIfNoProfile() {
     const pm = await this.instance;
-    if (!(await pm.activeProfile)) {
+    if (!(await this.hasProfile())) {
       console.error("No active profile. Please set an active profile with 'dcm profile set <profile>'");
       process.exit(1);
     }
+  }
+
+  public static async hasProfile() {
+    const pm = await this.instance;
+    return !!(await pm.activeProfile);
   }
 
   private _activeProfilePromise?: Promise<Profile | undefined>;

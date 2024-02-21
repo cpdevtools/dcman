@@ -44,11 +44,14 @@ export class GithubSession {
 
   public static async exitIfNotLoggedIn(): Promise<GithubSession | never> {
     const inst = await this.instance;
-    if (!inst.token) {
+    if (!(await this.isLoggedIn())) {
       console.error("You must be logged in to use this command.");
       process.exit(1);
     }
     return inst;
+  }
+  public static async isLoggedIn(): Promise<boolean> {
+    return !!(await this.instance).token;
   }
 
   public static async login(opts?: LoginOptions): Promise<GithubSession> {

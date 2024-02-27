@@ -316,9 +316,9 @@ export class GithubSession {
           message: "Enter github token",
         },
       ]);
-      success = !(await exec(`echo "${token}" | gh auth login -h github.com -p https --with-token`, { env: this._env() }));
+      success = !(await exec(`echo "${token}" | gh auth login -h github.com --with-token`, { env: this._env() }));
     } else {
-      success = !(await exec(`gh auth login -h github.com -p https -s ${SCOPES.join(",")} -w`, { env: this._env() }));
+      success = !(await exec(`gh auth login -h github.com -s ${SCOPES.join(",")} -w`, { env: this._env() }));
     }
     this._authStatusPromise = undefined;
     return success;

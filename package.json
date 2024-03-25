@@ -1,6 +1,6 @@
 {
   "name": "@cpdevtools/dcman",
-  "version": "0.0.25",
+  "version": "0.0.26",
   "private": true,
   "repository": "https://github.com/cpdevtools/dcman",
   "scripts": {

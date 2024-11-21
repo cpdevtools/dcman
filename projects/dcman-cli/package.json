@@ -11,7 +11,7 @@
   },
   "scripts": {
     "build": "run-s build:*",
-    "build:ts": "tsc",
+    "build:ts": "tsc --project tsconfig.json",
     "build:link": "pnpm --global link",
     "pack": "mkdir ./pack && pnpm pack --pack-destination ./pack && ls -al ./pack",
     "release": "pnpm publish ./pack/*.tgz --no-git-checks --access public  --publish-branch 'release/latest'",
@@ -28,7 +28,7 @@
     "typescript": "^5.0.4"
   },
   "dependencies": {
-    "@cpdevtools/dcman": "0.0.0-PLACEHOLDER",
+    "@cpdevtools/dcman": "workspace:*",
     "@cpdevtools/lib-node-utilities": "^0.4.63",
     "is-docker": "^2.2.1",
     "is-windows": "^1.0.2",

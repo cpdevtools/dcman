@@ -4,8 +4,8 @@ import { rm } from "fs/promises";
 import { DEVCONTAINER_DIR } from "../constants";
 
 export async function syncDevContainer(msg: string = "dcm sync") {
-  console.info("Syncing dev container");
   const cwd = DEVCONTAINER_DIR;
+  console.info("Syncing dev container", cwd);
   if (await gitHasChanges(DEVCONTAINER_DIR)) {
     await exec(`git add .`, { cwd });
     await exec(`git commit -m "${msg}"`, { cwd });

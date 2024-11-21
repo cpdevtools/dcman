@@ -11,7 +11,7 @@
   },
   "scripts": {
     "build": "run-s build:*",
-    "build:ts": "tsc",
+    "build:ts": "tsc --project tsconfig.json",
     "build:link": "pnpm --global link",
     "pack": "mkdir ./pack && pnpm pack --pack-destination ./pack && ls -al ./pack",
     "release": "pnpm publish ./pack/*.tgz --no-git-checks --access public  --publish-branch 'release/latest'",

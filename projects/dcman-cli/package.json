@@ -21,6 +21,7 @@
     "set-version:npm": "pnpm version --allow-same-version --commit-hooks=false --git-tag-version=false"
   },
   "devDependencies": {
+    "@cpdevtools/dcman": "workspace:*",
     "@types/is-windows": "^1.0.0",
     "@types/node": "^20.2.5",
     "@types/yargs": "^17.0.24",
@@ -28,7 +29,7 @@
     "typescript": "^5.0.4"
   },
   "dependencies": {
-    "@cpdevtools/dcman": "workspace:*",
+    "@cpdevtools/dcman": "0.0.0-PLACEHOLDER",
     "@cpdevtools/lib-node-utilities": "^0.4.63",
     "is-docker": "^2.2.1",
     "is-windows": "^1.0.2",

@@ -1,6 +1,6 @@
 {
   "name": "@cpdevtools/dcman-root",
-  "version": "0.0.27",
+  "version": "0.0.28",
   "private": true,
   "repository": "https://github.com/cpdevtools/dcman",
   "scripts": {
@@ -8,7 +8,9 @@
     "prepare:husky": "husky install",
     "prepare:remove-tags": "git tag | xargs git tag -d",
     "prepare:build": "pnpm run build",
-    "build": "pnpm  -r run build",
+    "build": "run-s build:*",
+    "build:lib": "pnpm -r --filter=@cpdevtools/dcman run build",
+    "build:cli": "pnpm -r --filter=@cpdevtools/dcman-cli run build",
     "watch": "pnpm -r --parallel run watch",
     "pack": "pnpm -r run pack",
     "release": "pnpm -r run release",
@@ -44,5 +46,8 @@
     "prettier": "^2.8.4",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.4"
+  },
+  "resolutions": {
+    "@cpdevtools/dcman": "workspace:*"
   }
 }

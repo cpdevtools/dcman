@@ -1,10 +1,11 @@
-import { PackageManager, readJsonFile, start, writeJsonFile } from "@cpdevtools/lib-node-utilities";
+import { PackageManager, readJsonFile, start, writeJsonFile, exec } from "@cpdevtools/lib-node-utilities";
 import { watch } from "chokidar";
 import { existsSync } from "fs";
 import { mkdir, readdir, rm } from "fs/promises";
-import { extname, join } from "path";
+import path, { extname, join } from "path";
 import simpleGit from "simple-git";
-import { WORKSPACES_DIR, DEVCONTAINER_DIR } from "../constants/paths";
+import { WORKSPACES_DIR, REPOS_DIR, DEVCONTAINER_DIR } from "../constants/paths";
+import * as glob from "fast-glob";
 
 export interface CodeWorkspace {
   folders: {
@@ -33,6 +34,8 @@ export async function syncGitReposInWorkSpace(workspaceFile: string) {
 
     console.info("Synchronizing Workspace:", workspaceFile);
     console.group();
+
+    const slnPath = path.join(WORKSPACES_DIR, workspaceFile.replace(".code-workspace", ".sln"));
 
     for (const repo of workspace.folders) {
       if (repo.path.startsWith("../repos/")) {
@@ -78,6 +81,14 @@ export async function syncGitReposInWorkSpace(workspaceFile: string) {
           console.warn(`${repoPath} is a not git repo. Expected repo of ${repoUri}`);
         }
         console.groupEnd();
+      }
+
+      const csprojFiles = await glob.async("**/*.csproj", { cwd: path.join(WORKSPACES_DIR, repo.path) });
+      if (csprojFiles.length > 0 && !existsSync(slnPath)) {
+        await exec(`dotnet new sln -n ${workspaceFile.replace(".code-workspace", "")}`, { cwd: path.join(WORKSPACES_DIR) });
+      }
+      for (const csprojFile of csprojFiles) {
+        await exec(`dotnet sln ${slnPath} add ${path.join(WORKSPACES_DIR, repo.path, csprojFile)}`, { cwd: path.join(WORKSPACES_DIR) });
       }
     }
     if (workspaceChanged) {

@@ -1,6 +1,6 @@
 {
   "name": "@cpdevtools/dcman-root",
-  "version": "0.0.29",
+  "version": "0.0.30",
   "private": true,
   "repository": "https://github.com/cpdevtools/dcman",
   "scripts": {
@@ -45,7 +45,8 @@
     "npm-run-all2": "^6.0.4",
     "prettier": "^2.8.4",
     "ts-node": "^10.9.1",
-    "typescript": "^5.0.4"
+    "typescript": "^5.0.4",
+    "visualstudiofiles": "^1.0.4"
   },
   "resolutions": {
     "@cpdevtools/dcman": "workspace:*"

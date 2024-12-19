@@ -37,6 +37,9 @@ importers:
       typescript:
         specifier: ^5.0.4
         version: 5.6.3
+      visualstudiofiles:
+        specifier: ^1.0.4
+        version: 1.0.4
 
   projects/dcman:
     dependencies:
@@ -76,6 +79,9 @@ importers:
       simple-git:
         specifier: ^3.19.1
         version: 3.27.0
+      visualstudiofiles:
+        specifier: ^1.0.4
+        version: 1.0.4
     devDependencies:
       "@octokit/types":
         specifier: ^11.1.0
@@ -1249,6 +1255,9 @@ packages:
 
   v8-compile-cache-lib@3.0.1:
     resolution: { integrity: sha512-wa7YjyUGfNZngI/vtK0UHAN+lgDCxBPCylVXGp0zu59Fz5aiGtNXaq3DhIov063MorB+VfufLh3JlF2KdTK3xg== }
+
+  visualstudiofiles@1.0.4:
+    resolution: { integrity: sha512-qJVGlTitEwqkAc2B+2VOwK96kvX4xQlgaX3T5lBjYKiZbQoeaS3PaTMsYydkUIxI4atgL99nkGEOCAh3Gc+4bw== }
 
   watch@1.0.2:
     resolution: { integrity: sha512-1u+Z5n9Jc1E2c7qDO8SinPoZuHj7FgbgU1olSFoyaklduDvvtX7GMMtlE6OC9FTXq4KvNAOfj6Zu4vI1e9bAKA== }
@@ -2524,6 +2533,8 @@ snapshots:
   util-deprecate@1.0.2: {}
 
   v8-compile-cache-lib@3.0.1: {}
+
+  visualstudiofiles@1.0.4: {}
 
   watch@1.0.2:
     dependencies:

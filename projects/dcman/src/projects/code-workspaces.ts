@@ -6,7 +6,7 @@ import path, { extname, join } from "path";
 import simpleGit from "simple-git";
 import { WORKSPACES_DIR, REPOS_DIR, DEVCONTAINER_DIR } from "../constants/paths";
 import * as glob from "fast-glob";
-
+import { parseVisualStudioSolutionFile } from "visualstudiofiles";
 export interface CodeWorkspace {
   folders: {
     path: string;
@@ -35,7 +35,32 @@ export async function syncGitReposInWorkSpace(workspaceFile: string) {
     console.info("Synchronizing Workspace:", workspaceFile);
     console.group();
 
-    const slnPath = path.join(WORKSPACES_DIR, workspaceFile.replace(".code-workspace", ".sln"));
+    const wsName = workspaceFile.replace(".code-workspace", "");
+    const slnPath = `${wsName}.sln`;
+
+    if ((await exec(`dotnet --version`)) === 0) {
+      if (!existsSync(slnPath)) {
+        await exec(`dotnet new sln -n ${wsName}`, { cwd: path.join(WORKSPACES_DIR) });
+      }
+
+      const sln = parseVisualStudioSolutionFile(slnPath);
+      const existingProjectPaths = sln.projects.map((p) => p.path);
+      const projectPaths = workspace.folders.flatMap((f) => glob.sync("**/*.csproj", { cwd: path.join(WORKSPACES_DIR, f.path) }));
+
+      existingProjectPaths.forEach(async (p) => {
+        if (!projectPaths.includes(p)) {
+          console.info(`Removing project ${p} from solution`);
+          await exec(`dotnet sln ${slnPath} remove ${p}`, { cwd: path.join(WORKSPACES_DIR) });
+        }
+      });
+
+      projectPaths.forEach(async (p) => {
+        if (!existingProjectPaths.includes(p)) {
+          console.info(`Adding project ${p} to solution`);
+          await exec(`dotnet sln ${slnPath} add ${p}`, { cwd: path.join(WORKSPACES_DIR) });
+        }
+      });
+    }
 
     for (const repo of workspace.folders) {
       if (repo.path.startsWith("../repos/")) {
@@ -81,14 +106,6 @@ export async function syncGitReposInWorkSpace(workspaceFile: string) {
           console.warn(`${repoPath} is a not git repo. Expected repo of ${repoUri}`);
         }
         console.groupEnd();
-      }
-
-      const csprojFiles = await glob.async("**/*.csproj", { cwd: path.join(WORKSPACES_DIR, repo.path) });
-      if (csprojFiles.length > 0 && !existsSync(slnPath)) {
-        await exec(`dotnet new sln -n ${workspaceFile.replace(".code-workspace", "")}`, { cwd: path.join(WORKSPACES_DIR) });
-      }
-      for (const csprojFile of csprojFiles) {
-        await exec(`dotnet sln ${slnPath} add ${path.join(WORKSPACES_DIR, repo.path, csprojFile)}`, { cwd: path.join(WORKSPACES_DIR) });
       }
     }
     if (workspaceChanged) {

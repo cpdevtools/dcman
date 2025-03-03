@@ -19,6 +19,8 @@ services:
       - "--providers.swarm.refreshSeconds=30"
 
       - "--entryPoints.web.address=:80"
+      - "--entryPoints.web.http2.maxConcurrentStreams=250"
+      - "--entryPoints.web.http3"
 
       #- "--tracing.elastic=true"
       #- "--tracing.elastic.secrettoken=${}"

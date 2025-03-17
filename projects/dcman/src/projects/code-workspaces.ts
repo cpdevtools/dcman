@@ -43,23 +43,28 @@ export async function syncGitReposInWorkSpace(workspaceFile: string) {
         await exec(`dotnet new sln -n ${wsName}`, { cwd: path.join(WORKSPACES_DIR) });
       }
 
-      const sln = parseVisualStudioSolutionFile(slnPath);
-      const existingProjectPaths = sln.projects.map((p) => p.path);
-      const projectPaths = workspace.folders.flatMap((f) => glob.sync("**/*.csproj", { cwd: path.join(WORKSPACES_DIR, f.path) }));
-
-      existingProjectPaths.forEach(async (p) => {
-        if (!projectPaths.includes(p)) {
-          console.info(`Removing project ${p} from solution`);
-          await exec(`dotnet sln ${slnPath} remove ${p}`, { cwd: path.join(WORKSPACES_DIR) });
-        }
-      });
-
-      projectPaths.forEach(async (p) => {
-        if (!existingProjectPaths.includes(p)) {
-          console.info(`Adding project ${p} to solution`);
-          await exec(`dotnet sln ${slnPath} add ${p}`, { cwd: path.join(WORKSPACES_DIR) });
-        }
-      });
+      try {
+        
+        const sln = parseVisualStudioSolutionFile(slnPath);
+        const existingProjectPaths = sln.projects.map((p) => p.path);
+        const projectPaths = workspace.folders.flatMap((f) => glob.sync("**/*.csproj", { cwd: path.join(WORKSPACES_DIR, f.path) }));
+  
+        existingProjectPaths.forEach(async (p) => {
+          if (!projectPaths.includes(p)) {
+            console.info(`Removing project ${p} from solution`);
+            await exec(`dotnet sln ${slnPath} remove ${p}`, { cwd: path.join(WORKSPACES_DIR) });
+          }
+        });
+  
+        projectPaths.forEach(async (p) => {
+          if (!existingProjectPaths.includes(p)) {
+            console.info(`Adding project ${p} to solution`);
+            await exec(`dotnet sln ${slnPath} add ${p}`, { cwd: path.join(WORKSPACES_DIR) });
+          }
+        });
+      }
+    } catch (e) {
+       console.error(e);
     }
 
     for (const repo of workspace.folders) {

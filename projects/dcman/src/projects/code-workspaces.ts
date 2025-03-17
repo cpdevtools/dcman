@@ -62,7 +62,6 @@ export async function syncGitReposInWorkSpace(workspaceFile: string) {
             await exec(`dotnet sln ${slnPath} add ${p}`, { cwd: path.join(WORKSPACES_DIR) });
           }
         });
-      }
     } catch (e) {
        console.error(e);
     }

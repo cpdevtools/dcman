@@ -1,4 +1,4 @@
-FROM traefik:v3.0
+FROM traefik:v3.6
 
 # ARG VERSION=8.8.1
 # RUN apk add curl libc6-compat jq

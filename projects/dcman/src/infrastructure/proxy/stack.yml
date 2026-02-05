@@ -21,6 +21,7 @@ services:
       - "--entryPoints.web.address=:80"
       - "--entryPoints.web.http2.maxConcurrentStreams=250"
       - "--entryPoints.web.http3"
+      - "--entryPoints.web.http.encodedCharacters=true"
 
       #- "--tracing.elastic=true"
       #- "--tracing.elastic.secrettoken=${}"

@@ -44,18 +44,17 @@ export async function syncGitReposInWorkSpace(workspaceFile: string) {
       }
 
       try {
-        
         const sln = parseVisualStudioSolutionFile(slnPath);
         const existingProjectPaths = sln.projects.map((p) => p.path);
         const projectPaths = workspace.folders.flatMap((f) => glob.sync("**/*.csproj", { cwd: path.join(WORKSPACES_DIR, f.path) }));
-  
+
         existingProjectPaths.forEach(async (p) => {
           if (!projectPaths.includes(p)) {
             console.info(`Removing project ${p} from solution`);
             await exec(`dotnet sln ${slnPath} remove ${p}`, { cwd: path.join(WORKSPACES_DIR) });
           }
         });
-  
+
         projectPaths.forEach(async (p) => {
           if (!existingProjectPaths.includes(p)) {
             console.info(`Adding project ${p} to solution`);
@@ -123,10 +122,14 @@ export async function syncGitReposInWorkSpace(workspaceFile: string) {
 }
 
 async function runPmInstall(path: string) {
-  const pkg = await PackageManager.loadPackage(path);
-  if (pkg) {
-    console.info("Running install ", pkg.name);
-    await pkg.install();
+  try {
+    const pkg = await PackageManager.loadPackage(path);
+    if (pkg) {
+      console.info("Running install ", pkg.name);
+      await pkg.install();
+    }
+  } catch (e) {
+    console.error("Failed to install package dependencies", e);
   }
 }
 
